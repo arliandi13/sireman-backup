@@ -12,7 +12,12 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="https://via.placeholder.com/50" alt="Logo" class="d-inline-block align-text-top">
-                Login
+                @if(session('user'))
+                <a href="/profile">{{ session('user')->name }}</a>
+                <a href="/logout">Logout</a>
+                @else
+                <a href="/login">Login</a>
+                @endif
             </a>
         </div>
     </nav>
