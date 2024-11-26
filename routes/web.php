@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PesananController;
+
 
 
 
@@ -41,6 +43,13 @@ Route::get('/dashboard-kasir', function () {
 Route::get('/dashboard-koki', function () {
     return 'Dashboard Koki';
 })->middleware('checkRole:koki');
+
+Route::get('/', [PesananController::class, 'index'])->name('pesanan.index');
+Route::post('/tambah-ke-keranjang', [PesananController::class, 'tambahKeKeranjang'])->name('pesanan.tambah');
+Route::get('/keranjang', [PesananController::class, 'lihatKeranjang'])->name('pesanan.keranjang');
+Route::post('/keranjang/update', [PesananController::class, 'updateKeranjang'])->name('pesanan.update');
+Route::post('/keranjang/simpan', [PesananController::class, 'simpanPesanan'])->name('pesanan.simpan');
+Route::get('/list-pesanan', [PesananController::class, 'listPesanan'])->name('pesanan.list');
 
 
 Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
