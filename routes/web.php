@@ -5,6 +5,8 @@ use App\Http\Controllers\MenuController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\ProfileWaitersController;
+
 
 
 
@@ -50,6 +52,11 @@ Route::get('/keranjang', [PesananController::class, 'lihatKeranjang'])->name('pe
 Route::post('/keranjang/update', [PesananController::class, 'updateKeranjang'])->name('pesanan.update');
 Route::post('/keranjang/simpan', [PesananController::class, 'simpanPesanan'])->name('pesanan.simpan');
 Route::get('/list-pesanan', [PesananController::class, 'listPesanan'])->name('pesanan.list');
+
+Route::get('/profile', [ProfileWaitersController::class, 'edit'])->name('profile.edit');
+Route::put('/profile', [ProfileWaitersController::class, 'update'])->name('profile.update');
+Route::get('/profile', [ProfileWaitersController::class, 'show'])->name('profile');
+
 
 
 Route::get('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->name('logout');

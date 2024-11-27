@@ -38,6 +38,21 @@
         <a href="{{ route('pesanan.list')}}" class="btn btn-secondary mb-3">List Pesanan</a>
         @else
         @endif
+        <!-- Search Bar -->
+        <div class="container mt-4">
+            <!-- Form Pencarian -->
+            <form action="/" method="GET" class="mb-4">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Cari kode, kategori, deskripsi, atau harga..."
+                        value="{{ request('search') }}"
+                    >
+                    <button type="submit" class="btn btn-primary">Cari</button>
+                </div>
+            </form>
 
 
         <!-- Buttons for Category Filter -->
@@ -47,7 +62,8 @@
         </div>
 
         <!-- Menu List -->
-        <div class="row" id="menu-list">
+    <div class="row" id="menu-list">
+        @if($menus->count())
             @foreach($menus as $menu)
                 <div class="col-md-4 mb-3 menu-item {{ $menu->kategori }}">
                     <div class="card">
@@ -56,7 +72,9 @@
                             <h5 class="card-title">{{ $menu->deskripsi }}</h5>
                             <p class="card-text">Harga: Rp{{ number_format($menu->harga, 0, ',', '.') }}</p>
                             <p class="card-text">Kategori: {{ ucfirst($menu->kategori) }}</p>
+
                             @if(session('user') && session('user')->role === 'waiters')
+                                <!-- Form untuk Menambahkan Pesanan -->
                                 <form action="{{ route('pesanan.tambah') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="menu_id" value="{{ $menu->id }}">
@@ -67,8 +85,11 @@
                     </div>
                 </div>
             @endforeach
-        </div>
+        @else
+            <div class="alert alert-warning">Tidak ada data ditemukan.</div>
+        @endif
     </div>
+</div>
 
     <!-- Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

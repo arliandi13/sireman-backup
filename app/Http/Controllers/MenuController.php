@@ -3,12 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $menus = Menu::all(); // Ambil semua data menu
+        $query = $request->input('search'); // Ambil query dari input pencarian
+
+        $menus = Menu::when($query, function ($queryBuilder) use ($query) {
+            return $queryBuilder->where(function ($q) use ($query) {
+                $q->where('kode_menu', 'LIKE', '%' . $query . '%')
+                  ->orWhere('kategori', 'LIKE', '%' . $query . '%')
+                  ->orWhere('deskripsi', 'LIKE', '%' . $query . '%')
+                  ->orWhere('harga', 'LIKE', '%' . $query . '%');
+            });
+        })->get();
+
         return view('index', compact('menus'));
     }
 }
