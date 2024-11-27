@@ -53,9 +53,9 @@ Route::post('/keranjang/update', [PesananController::class, 'updateKeranjang'])-
 Route::post('/keranjang/simpan', [PesananController::class, 'simpanPesanan'])->name('pesanan.simpan');
 Route::get('/list-pesanan', [PesananController::class, 'listPesanan'])->name('pesanan.list');
 
-Route::get('/profile', [ProfileWaitersController::class, 'edit'])->name('profile.edit');
-Route::put('/profile', [ProfileWaitersController::class, 'update'])->name('profile.update');
-Route::get('/profile', [ProfileWaitersController::class, 'show'])->name('profile');
+Route::get('/profile', [ProfileWaitersController::class, 'show'])->name('profile.show');
+Route::get('/profile/edit', [ProfileWaitersController::class, 'edit'])->name('profile.edit');
+Route::put('/profile/update', [ProfileWaitersController::class, 'update'])->name('profile.update');
 
 
 
