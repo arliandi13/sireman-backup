@@ -15,21 +15,32 @@
                     <th>Kode Pesanan</th>
                     <th>Nama Pelanggan</th>
                     <th>Deskripsi</th>
+                    <th>No Meja</th>
                     <th>Status</th>
                     <th>Total Harga</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($pesanan as $pesan)
-                    <tr>
-                        <td>{{ $pesan->kode_pesanan }}</td>
-                        <td>{{ $pesan->nama_pelanggan }}</td>
-                        <td>{{ $pesan->deskripsi }}</td>
-                        <td>{{ $pesan->status }}</td>
-                        <td>Rp{{ number_format($pesan->total_harga, 0, ',', '.') }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
+    @foreach($pesanan as $pesan)
+        <tr>
+            <td>{{ $pesan->kode_pesanan }}</td>
+            <td>{{ $pesan->nama_pelanggan }}</td>
+            <td>{{ $pesan->deskripsi }}</td>
+            <td>
+                @if($pesan->is_bawa_pulang)
+                    Bawa Pulang
+                @elseif(!empty($pesan->bangku))
+                    Nomor Meja: {{ $pesan->bangku }}
+                @else
+                    Tidak Diketahui
+                @endif
+            </td>
+            <td>{{ $pesan->status }}</td>
+            <td>Rp{{ number_format($pesan->total_harga, 0, ',', '.') }}</td>
+        </tr>
+    @endforeach
+</tbody>
+
         </table>
 
         <a href="/" class="btn btn-secondary mt-3">Kembali ke Menu</a>
