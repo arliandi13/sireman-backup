@@ -43,49 +43,67 @@ class PesananController extends Controller
     }
 
     public function updateKeranjang(Request $request)
-    {
-        $menuId = $request->input('menu_id');
-        $jumlah = $request->input('jumlah');
-        $keranjang = session()->get('keranjang', []);
+{
+    $menuId = $request->input('menu_id');
+    $jumlah = $request->input('jumlah');
+    $deskripsiPesanan = $request->input('deskripsi_pesanan', '');
+    $keranjang = session()->get('keranjang', []);
 
-        if (isset($keranjang[$menuId])) {
-            if ($jumlah > 0) {
-                $keranjang[$menuId]['jumlah'] = $jumlah;
-            } else {
-                unset($keranjang[$menuId]);
-            }
-            session()->put('keranjang', $keranjang);
+    if (isset($keranjang[$menuId])) {
+        if ($jumlah > 0) {
+            $keranjang[$menuId]['jumlah'] = $jumlah;
+            $keranjang[$menuId]['deskripsi_pesanan'] = $deskripsiPesanan; // Update deskripsi
+        } else {
+            unset($keranjang[$menuId]);
         }
-
-        return redirect()->route('pesanan.keranjang');
+        session()->put('keranjang', $keranjang);
     }
 
-    public function simpanPesanan(Request $request)
-    {
-        $request->validate([
-            'nama_pelanggan' => 'required',
-            'bangku' => 'nullable|required_without:is_bawa_pulang',
-            'is_bawa_pulang' => 'nullable|boolean|required_without:bangku',
-        ]);
+    return redirect()->route('pesanan.keranjang');
+}
 
-        $keranjang = session()->get('keranjang', []);
-        $totalHarga = collect($keranjang)->reduce(function ($carry, $item) {
-            return $carry + $item['menu']->harga * $item['jumlah'];
-        }, 0);
 
-        $pesanan = Pesanan::create([
-            'kode_pesanan' => 'PES-' . time(),
-            'nama_pelanggan' => $request->input('nama_pelanggan'),
-            'bangku' => $request->input('bangku'),
-            'is_bawa_pulang' => $request->input('is_bawa_pulang') ? 1 : 0,
-            'detail_pesanan' => json_encode($keranjang),
-            'total_harga' => $totalHarga,
-            'status' => 'Dalam Antrian',
-        ]);
+public function simpanPesanan(Request $request)
+{
+    $request->validate([
+        'nama_pelanggan' => 'required',
+        'bangku' => 'nullable|required_without:is_bawa_pulang',
+        'is_bawa_pulang' => 'nullable|boolean|required_without:bangku',
+    ]);
 
-        session()->forget('keranjang');
-        return redirect()->route('pesanan.list')->with('success', 'Pesanan berhasil disimpan.');
+    $keranjang = session()->get('keranjang', []);
+
+    // Menyederhanakan struktur data `keranjang`
+    $simplifiedKeranjang = [];
+    foreach ($keranjang as $id => $item) {
+        $simplifiedKeranjang[] = [
+            'kode_menu' => $item['menu']->kode_menu,
+            'deskripsi' => $item['menu']->deskripsi,
+            'harga' => $item['menu']->harga,
+            'jumlah' => $item['jumlah'],
+        ];
     }
+
+    $totalHarga = collect($simplifiedKeranjang)->reduce(function ($carry, $item) {
+        return $carry + $item['harga'] * $item['jumlah'];
+    }, 0);
+
+    // Simpan `keranjang` yang telah disederhanakan sebagai JSON
+    $pesanan = Pesanan::create([
+        'kode_pesanan' => 'PES-' . time(),
+        'nama_pelanggan' => $request->input('nama_pelanggan'),
+        'bangku' => $request->input('bangku'),
+        'is_bawa_pulang' => $request->input('is_bawa_pulang') ? 1 : 0,
+        'detail_pesanan' => json_encode($simplifiedKeranjang),
+        'total_harga' => $totalHarga,
+        'status' => 'Dalam Antrian',
+    ]);
+
+    session()->forget('keranjang');
+
+    return redirect()->route('pesanan.list')->with('success', 'Pesanan berhasil disimpan.');
+}
+
 
     public function listPesanan()
     {

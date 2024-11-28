@@ -43,13 +43,7 @@
             <!-- Form Pencarian -->
             <form action="/" method="GET" class="mb-4">
                 <div class="input-group">
-                    <input
-                        type="text"
-                        name="search"
-                        class="form-control"
-                        placeholder="Cari kode, kategori, deskripsi, atau harga..."
-                        value="{{ request('search') }}"
-                    >
+                    <input type="text" name="search" class="form-control" placeholder="Cari kode, kategori, deskripsi, atau harga..." value="{{ request('search') }}">
                     <button type="submit" class="btn btn-primary">Cari</button>
                 </div>
             </form>
@@ -62,55 +56,74 @@
         </div>
 
         <!-- Menu List -->
-    <div class="row" id="menu-list">
-        @if($menus->count())
-            @foreach($menus as $menu)
-                <div class="col-md-4 mb-3 menu-item {{ $menu->kategori }}">
-                    <div class="card">
-                        <img src="{{ $menu->gambar_menu }}" class="card-img-top" alt="{{ $menu->deskripsi }}" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $menu->deskripsi }}</h5>
-                            <p class="card-text">Harga: Rp{{ number_format($menu->harga, 0, ',', '.') }}</p>
-                            <p class="card-text">Kategori: {{ ucfirst($menu->kategori) }}</p>
-
-                            @if(session('user') && session('user')->role === 'waiters')
-                                <!-- Form untuk Menambahkan Pesanan -->
-                                <form action="{{ route('pesanan.tambah') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="menu_id" value="{{ $menu->id }}">
-                                    <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
-                                </form>
-                            @endif
-                        </div>
+<div class="row" id="menu-list">
+    @if($menus->count())
+        @foreach($menus as $menu)
+            <div class="col-md-4 mb-3 menu-item {{ $menu->kategori }}">
+                <div class="card">
+                    <img src="{{ $menu->gambar_menu }}" class="card-img-top" alt="{{ $menu->deskripsi }}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ $menu->deskripsi }}</h5>
+                        <p class="card-text">Harga: Rp{{ number_format($menu->harga, 0, ',', '.') }}</p>
+                        <p class="card-text">Kategori: {{ ucfirst($menu->kategori) }}</p>
+                        @if(session('user') && session('user')->role === 'waiters')
+                            <!-- Form untuk Menambahkan Pesanan -->
+                            <form action="{{ route('pesanan.tambah') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+                                <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
-            @endforeach
-        @else
-            <div class="alert alert-warning">Tidak ada data ditemukan.</div>
-        @endif
-    </div>
+            </div>
+        @endforeach
+    @else 
+    <div class="alert alert-warning" style="display: none;">Tidak ada data ditemukan.</div>
+    @endif
 </div>
 
-    <!-- Script -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('.menu-item').hide(); // Sembunyikan semua menu awalnya
+<!-- Script -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Sembunyikan item
+        $('.menu-item').hide();
 
-            $('#btn-makanan').click(function () {
-                $('.menu-item').hide();
-                $('.makanan').fadeIn();
-            });
-
-            $('#btn-minuman').click(function () {
-                $('.menu-item').hide();
-                $('.minuman').fadeIn();
-            });
-
-            // Tampilkan semua menu secara default
-            $('.menu-item').show();
+        // Menampilkan jika button di klik
+        $('#btn-makanan').click(function () {
+            $('.menu-item').hide();
+            $('.makanan').fadeIn();
+            checkEmptyResults();
         });
-    </script>
-</body>
-</html>
+
+        $('#btn-minuman').click(function () {
+            $('.menu-item').hide();
+            $('.minuman').fadeIn();
+            checkEmptyResults();
+        });
+
+        // Menampilkan semua item menu secara default jika tidak ada permintaan pencarian
+        const searchQuery = '{{ request('search') }}';
+        if (!searchQuery) {
+            $('.menu-item').show();
+            checkEmptyResults();
+        } else {
+            // filter query
+            $('.menu-item').hide();
+            $('.menu-item').filter(function() {
+                return $(this).text().toLowerCase().includes(searchQuery.toLowerCase());
+            }).fadeIn();
+            checkEmptyResults();
+        }
+
+        function checkEmptyResults() {
+            if ($('.menu-item:visible').length === 0) {
+                $('.alert-warning').show(); // Tampilkan alert jika tidak ada item yang terlihat
+            } else {
+                $('.alert-warning').hide(); // Sembunyikan alert jika item ditemukan
+            }
+        }
+    });
+</script>
