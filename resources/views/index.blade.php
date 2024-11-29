@@ -15,7 +15,7 @@
                 SIREMAN
             </a>
             <div>
-                @if(session('user'))
+                @if(session('user') && (session('user')->role === 'waiters' || session('user')->role === 'kasir'))
                     <span class="me-3">Hello, {{ session('user')->name }}</span>
                     <a href="/profile" class="btn btn-outline-primary btn-sm">Profile</a>
                     <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
@@ -31,13 +31,12 @@
         <h1 class="my-4">Menu</h1>
 
         <!-- Keranjang Button -->
-        @if(session('user'))
-        <a href="{{ route('pesanan.keranjang') }}" class="btn btn-primary mb-3">
-            Keranjang ({{ count($keranjang ?? []) }})
-        </a>
-        <a href="{{ route('pesanan.list')}}" class="btn btn-secondary mb-3">List Pesanan</a>
-        @else
-        @endif
+        @if(session('user') && (session('user')->role === 'waiters' || session('user')->role === 'kasir'))
+    <a href="{{ route('pesanan.keranjang') }}" class="btn btn-primary mb-3">
+        Keranjang ({{ count($keranjang ?? []) }})
+    </a>
+    <a href="{{ route('pesanan.list')}}" class="btn btn-secondary mb-3">List Pesanan</a>
+@endif
         <!-- Search Bar -->
         <div class="container mt-4">
             <!-- Form Pencarian -->
@@ -66,13 +65,13 @@
                         <h5 class="card-title">{{ $menu->deskripsi }}</h5>
                         <p class="card-text">Harga: Rp{{ number_format($menu->harga, 0, ',', '.') }}</p>
                         <p class="card-text">Kategori: {{ ucfirst($menu->kategori) }}</p>
-                        @if(session('user') && session('user')->role === 'waiters')
-                            <!-- Form untuk Menambahkan Pesanan -->
-                            <form action="{{ route('pesanan.tambah') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="kode_menu" value="{{ $menu->kode_menu }}">
-                                <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
-                            </form>
+                        @if(session('user') && (session('user')->role === 'waiters' || session('user')->role === 'kasir'))
+                        <!-- Form untuk Menambahkan Pesanan -->
+                        <form action="{{ route('pesanan.tambah') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="kode_menu" value="{{ $menu->kode_menu }}">
+                            <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
+                        </form>
                         @endif
                     </div>
                 </div>

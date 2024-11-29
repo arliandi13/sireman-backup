@@ -16,6 +16,11 @@ class PesananController extends Controller
 
     public function tambahKeKeranjang(Request $request)
 {
+    $user = session('user');
+    if (!in_array($user->role, ['waiters', 'kasir'])) {
+        abort(403, 'Unauthorized action.');
+    }
+
     $kodeMenu = $request->input('kode_menu');
     $menu = \DB::table('menus')->where('kode_menu', $kodeMenu)->first();
 
@@ -33,6 +38,7 @@ class PesananController extends Controller
 }
 
 
+
     public function lihatKeranjang()
     {
         $keranjang = session()->get('keranjang', []);
@@ -47,21 +53,20 @@ class PesananController extends Controller
 {
     $menuId = $request->input('menu_id');
     $jumlah = $request->input('jumlah');
-    $deskripsiPesanan = $request->input('deskripsi_pesanan', '');
     $keranjang = session()->get('keranjang', []);
 
     if (isset($keranjang[$menuId])) {
         if ($jumlah > 0) {
             $keranjang[$menuId]['jumlah'] = $jumlah;
-            $keranjang[$menuId]['deskripsi_pesanan'] = $deskripsiPesanan; // Update deskripsi
         } else {
             unset($keranjang[$menuId]);
         }
         session()->put('keranjang', $keranjang);
     }
 
-    return redirect()->route('pesanan.keranjang');
+    return redirect()->route('pesanan.keranjang')->with('success', 'Keranjang berhasil diperbarui.');
 }
+
 
 
 public function simpanPesanan(Request $request)
@@ -70,6 +75,7 @@ public function simpanPesanan(Request $request)
         'nama_pelanggan' => 'required',
         'bangku' => 'nullable|required_without:is_bawa_pulang',
         'is_bawa_pulang' => 'nullable|boolean|required_without:bangku',
+        'catatan_tambahan' => 'nullable',
     ]);
 
     $keranjang = session()->get('keranjang', []);
@@ -93,6 +99,7 @@ public function simpanPesanan(Request $request)
         'nama_pelanggan' => $request->input('nama_pelanggan'),
         'bangku' => $request->input('bangku'),
         'is_bawa_pulang' => $request->input('is_bawa_pulang') ? 1 : 0,
+        'catatan_tambahan' => $request->input('catatan_tambahan'),
         'detail_pesanan' => json_encode($detailPesanan),
         'total_harga' => $totalHarga,
         'status' => 'Dalam Antrian',

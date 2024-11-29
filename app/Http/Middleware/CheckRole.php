@@ -5,13 +5,15 @@ use Closure;
 
 class CheckRole
 {
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, ...$roles)
 {
-    $user = session('user');
-    if ($user && $user->role === $role) {
-        return $next($request);
+    $userRole = session('user')->role ?? null;
+
+    if (!$userRole || !in_array($userRole, $roles)) {
+        return redirect('/')->with('error', 'Anda tidak memiliki akses.');
     }
 
-    return redirect('/login')->withErrors(['Unauthorized access']);
+    return $next($request);
 }
+
 }
