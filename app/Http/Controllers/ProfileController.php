@@ -5,13 +5,13 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class ProfileWaitersController extends Controller
+class ProfileController extends Controller
 {
     public function show()
     {
         if (session()->has('user')) {
             $user = session('user');
-            return view('profile_waiters', compact('user'));
+            return view('profile', compact('user'));
         }
 
         return redirect('/login');
@@ -35,7 +35,7 @@ class ProfileWaitersController extends Controller
             return redirect('/login')->withErrors(['error' => 'User tidak ditemukan di session']);
         }
 
-        return view('profile_waiters', compact('user'));
+        return view('profile', compact('user'));
     }
 
     public function update(Request $request)
