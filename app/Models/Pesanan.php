@@ -16,6 +16,7 @@ class Pesanan extends Model
         'nama_pelanggan',
         'bangku',
         'is_bawa_pulang',
+        'catatan_tambahan',
         'detail_pesanan',
         'total_harga',
         'status',

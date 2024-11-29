@@ -70,7 +70,7 @@
                             <!-- Form untuk Menambahkan Pesanan -->
                             <form action="{{ route('pesanan.tambah') }}" method="POST">
                                 @csrf
-                                <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+                                <input type="hidden" name="kode_menu" value="{{ $menu->kode_menu }}">
                                 <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
                             </form>
                         @endif
@@ -78,7 +78,7 @@
                 </div>
             </div>
         @endforeach
-    @else 
+    @else
     <div class="alert alert-warning" style="display: none;">Tidak ada data ditemukan.</div>
     @endif
 </div>

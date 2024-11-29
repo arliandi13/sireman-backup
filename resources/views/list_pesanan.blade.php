@@ -14,6 +14,7 @@
                 <tr>
                     <th>Kode Pesanan</th>
                     <th>Nama Pelanggan</th>
+                    <th>Catatan Tambahan</th>
                     <th>Detail Pesanan</th>
                     <th>No Meja</th>
                     <th>Status</th>
@@ -25,6 +26,7 @@
                 <tr>
                     <td>{{ $pesan->kode_pesanan }}</td>
                     <td>{{ $pesan->nama_pelanggan }}</td>
+                    <td>{{ $pesan->catatan_tambahan }}</td>
                     <<td>
                         <ul>
                             @php

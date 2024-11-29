@@ -51,8 +51,8 @@
                 <input type="text" class="form-control" name="nama_pelanggan" required>
             </div>
             <div class="mb-3">
-                <label for="deskripsi">Deskripsi Tambahan</label>
-                <textarea class="form-control" name="deskripsi" rows="3" placeholder="Catatan untuk pesanan..." required></textarea>
+                <label for="deskripsi">Catatan Tambahan</label>
+                <textarea class="form-control" name="catatan_tambahan" rows="3" placeholder="Catatan untuk pesanan..." required></textarea>
             </div>
             <div class="mb-3">
                 <label for="bangku">Bangku</label>

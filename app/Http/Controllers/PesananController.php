@@ -15,22 +15,23 @@ class PesananController extends Controller
     }
 
     public function tambahKeKeranjang(Request $request)
-    {
-        $menuId = $request->input('menu_id');
-        $menu = \DB::table('menus')->find($menuId);
+{
+    $kodeMenu = $request->input('kode_menu');
+    $menu = \DB::table('menus')->where('kode_menu', $kodeMenu)->first();
 
-        if (!$menu) {
-            return redirect()->back()->with('error', 'Menu tidak ditemukan.');
-        }
-
-        $keranjang = session()->get('keranjang', []);
-        $keranjang[$menuId] = $keranjang[$menuId] ?? ['menu' => $menu, 'jumlah' => 0];
-        $keranjang[$menuId]['jumlah']++;
-
-        session()->put('keranjang', $keranjang);
-
-        return redirect()->back()->with('success', 'Menu berhasil ditambahkan ke keranjang.');
+    if (!$menu) {
+        return redirect()->back()->with('error', 'Menu tidak ditemukan.');
     }
+
+    $keranjang = session()->get('keranjang', []);
+    $keranjang[$kodeMenu] = $keranjang[$kodeMenu] ?? ['menu' => $menu, 'jumlah' => 0];
+    $keranjang[$kodeMenu]['jumlah']++;
+
+    session()->put('keranjang', $keranjang);
+
+    return redirect()->back()->with('success', 'Menu berhasil ditambahkan ke keranjang.');
+}
+
 
     public function lihatKeranjang()
     {
@@ -72,11 +73,10 @@ public function simpanPesanan(Request $request)
     ]);
 
     $keranjang = session()->get('keranjang', []);
+    $detailPesanan = [];
 
-    // Menyederhanakan struktur data `keranjang`
-    $simplifiedKeranjang = [];
-    foreach ($keranjang as $id => $item) {
-        $simplifiedKeranjang[] = [
+    foreach ($keranjang as $kodeMenu => $item) {
+        $detailPesanan[] = [
             'kode_menu' => $item['menu']->kode_menu,
             'deskripsi' => $item['menu']->deskripsi,
             'harga' => $item['menu']->harga,
@@ -84,17 +84,16 @@ public function simpanPesanan(Request $request)
         ];
     }
 
-    $totalHarga = collect($simplifiedKeranjang)->reduce(function ($carry, $item) {
-        return $carry + $item['harga'] * $item['jumlah'];
+    $totalHarga = collect($detailPesanan)->reduce(function ($carry, $item) {
+        return $carry + ($item['harga'] * $item['jumlah']);
     }, 0);
 
-    // Simpan `keranjang` yang telah disederhanakan sebagai JSON
-    $pesanan = Pesanan::create([
+    Pesanan::create([
         'kode_pesanan' => 'PES-' . time(),
         'nama_pelanggan' => $request->input('nama_pelanggan'),
         'bangku' => $request->input('bangku'),
         'is_bawa_pulang' => $request->input('is_bawa_pulang') ? 1 : 0,
-        'detail_pesanan' => json_encode($simplifiedKeranjang),
+        'detail_pesanan' => json_encode($detailPesanan),
         'total_harga' => $totalHarga,
         'status' => 'Dalam Antrian',
     ]);
@@ -103,6 +102,7 @@ public function simpanPesanan(Request $request)
 
     return redirect()->route('pesanan.list')->with('success', 'Pesanan berhasil disimpan.');
 }
+
 
 
     public function listPesanan()
