@@ -19,6 +19,9 @@
                     <th>No Meja</th>
                     <th>Status</th>
                     <th>Total Harga</th>
+                    @if(session('user') && (session('user')->role === 'kasir'))
+                    <th>Aksi</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -30,8 +33,8 @@
                     <<td>
                         <ul>
                             @php
-                                $items = is_string($pesan->detail_pesanan) 
-                                    ? json_decode($pesan->detail_pesanan, true) 
+                                $items = is_string($pesan->detail_pesanan)
+                                    ? json_decode($pesan->detail_pesanan, true)
                                     : $pesan->detail_pesanan;
                             @endphp
                             @foreach($items as $item)
@@ -53,6 +56,14 @@
                     </td>
                     <td>{{ $pesan->status }}</td>
                     <td>Rp{{ number_format($pesan->total_harga, 0, ',', '.') }}</td>
+                    <td>
+                        @if(session('user') && (session('user')->role === 'kasir'))
+                        <form action="{{ route('pembayaran.form', $pesan->kode_pesanan) }}" method="GET">
+                            @csrf
+                            <button type="submit" class="btn btn-success">Bayar</button>
+                        </form>
+                        @endif
+                    </td>
                 </tr>
                 @endforeach
             </tbody>

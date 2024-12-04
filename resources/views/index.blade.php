@@ -7,6 +7,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
     <!-- Navbar -->
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -32,11 +43,15 @@
 
         <!-- Keranjang Button -->
         @if(session('user') && (session('user')->role === 'waiters' || session('user')->role === 'kasir'))
-    <a href="{{ route('pesanan.keranjang') }}" class="btn btn-primary mb-3">
-        Keranjang ({{ count($keranjang ?? []) }})
-    </a>
-    <a href="{{ route('pesanan.list')}}" class="btn btn-secondary mb-3">List Pesanan</a>
-@endif
+        <a href="{{ route('pesanan.keranjang') }}" class="btn btn-primary mb-3">
+            Keranjang ({{ count(session('keranjang', [])) }})
+        </a>
+        <!-- Debug: Show keranjang array -->
+        @if(session('keranjang_debug'))
+        <pre>{{ print_r(session('keranjang_debug'), true) }}</pre>
+        @endif
+        <a href="{{ route('pesanan.list')}}" class="btn btn-secondary mb-3">List Pesanan</a>
+        @endif
         <!-- Search Bar -->
         <div class="container mt-4">
             <!-- Form Pencarian -->
@@ -72,6 +87,11 @@
                             <input type="hidden" name="kode_menu" value="{{ $menu->kode_menu }}">
                             <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
                         </form>
+                        @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                        @endif
                         @endif
                     </div>
                 </div>

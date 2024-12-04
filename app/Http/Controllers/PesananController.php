@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pesanan;
+use App\Models\Menu;
 
 class PesananController extends Controller
 {
     public function index()
-    {
-        $menus = \DB::table('menus')->get(); // Ambil semua data menu dari tabel `menus`
-        $keranjang = session()->get('keranjang', []); // Ambil keranjang dari sesi
-        return view('index', compact('menus', 'keranjang'));
-    }
+{
+    $menus = \DB::table('menus')->get(); // Mengambil semua menu
+    $keranjang = session()->get('keranjang', []); // Mengambil keranjang dari sesi
+    return view('index', compact('menus', 'keranjang'));
+}
+
 
     public function tambahKeKeranjang(Request $request)
 {
@@ -34,8 +36,11 @@ class PesananController extends Controller
 
     session()->put('keranjang', $keranjang);
 
-    return redirect()->back()->with('success', 'Menu berhasil ditambahkan ke keranjang.');
+    // Debugging
+    return redirect()->back()->with('success', 'Menu berhasil ditambahkan ke keranjang.')
+                           ->with('keranjang_debug', session()->get('keranjang'));
 }
+
 
 
 

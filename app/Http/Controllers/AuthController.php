@@ -20,9 +20,9 @@ class AuthController extends Controller
             case 'pemilik':
                 return redirect('/dashboard-pemilik');
             case 'kasir':
-                return redirect('/dashboard-kasir');
+                return redirect('/');
             case 'waiters':
-                return redirect('/'); // Waiters ke halaman utama
+                return redirect('/');
             case 'koki':
                 return redirect('/dashboard-koki');
         }
