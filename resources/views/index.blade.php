@@ -50,7 +50,7 @@
         @if(session('keranjang_debug'))
         <pre>{{ print_r(session('keranjang_debug'), true) }}</pre>
         @endif
-        <a href="{{ route('pesanan.list')}}" class="btn btn-secondary mb-3">List Pesanan</a>
+        <a href="{{ route('pesanan.list-pesanan')}}" class="btn btn-secondary mb-3">List Pesanan</a>
         @endif
         <!-- Search Bar -->
         <div class="container mt-4">

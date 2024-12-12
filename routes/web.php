@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\DashboardController;
+
 
 
 
@@ -39,20 +41,16 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rute dashboard dengan middleware checkRole
-Route::get('/dashboard-pemilik', function () {
-    return 'Dashboard Pemilik';
-})->middleware('checkRole:pemilik');
+Route::get('/dashboard-pemilik', [DashboardController::class, 'pemilikDashboard'])->middleware('checkRole:pemilik')->name('dashboard_pemilik');
 
-Route::get('/dashboard-koki', function () {
-    return 'Dashboard Koki';
-})->middleware('checkRole:koki');
+Route::get('/dashboard-koki', [DashboardController::class, 'kokiDashboard'])->middleware('checkRole:koki')->name('dashboard_koki');
 
 // Rute untuk keranjang
 Route::post('/tambah-ke-keranjang', [PesananController::class, 'tambahKeKeranjang'])->name('pesanan.tambah')->middleware('checkRole:waiters,kasir');
 Route::get('/keranjang', [PesananController::class, 'lihatKeranjang'])->name('pesanan.keranjang')->middleware('checkRole:waiters,kasir');
 Route::post('/keranjang/update', [PesananController::class, 'updateKeranjang'])->name('pesanan.update');
 Route::post('/simpan-pesanan', [PesananController::class, 'simpanPesanan'])->name('pesanan.simpan')->middleware('checkRole:waiters,kasir');
-Route::get('/list-pesanan', [PesananController::class, 'listPesanan'])->name('pesanan.list')->middleware('checkRole:waiters,kasir');;
+Route::get('/list-pesanan', [PesananController::class, 'listPesanan'])->name('pesanan.list-pesanan')->middleware('checkRole:koki,kasir');
 
 // Rute profil pengguna
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show')->middleware('auth');

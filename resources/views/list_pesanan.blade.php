@@ -30,7 +30,7 @@
                     <td>{{ $pesan->kode_pesanan }}</td>
                     <td>{{ $pesan->nama_pelanggan }}</td>
                     <td>{{ $pesan->catatan_tambahan }}</td>
-                    <<td>
+                    <td>
                         <ul>
                             @php
                                 $items = is_string($pesan->detail_pesanan)
@@ -69,7 +69,13 @@
             </tbody>
         </table>
 
-        <a href="/" class="btn btn-secondary mt-3">Kembali ke Menu</a>
+        <div class="d-flex justify-content-between mt-3">
+            <a href="/" class="btn btn-secondary">Kembali ke Menu</a>
+            <!-- Cek apakah role pengguna adalah 'koki' -->
+            @if(session('user') && session('user')->role === 'koki')
+                <a href="{{ route('dashboard_koki') }}" class="btn btn-primary">Kembali ke Dashboard Koki</a>
+            @endif
+        </div>
     </div>
 </body>
 </html>
