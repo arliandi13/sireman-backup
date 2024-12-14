@@ -1,40 +1,39 @@
 <?php
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+namespace App\Http\Controllers; 
+use Illuminate\Http\Request;  
+use Illuminate\Support\Facades\Auth;  
+use App\Models\User;  
 
 class AuthController extends Controller
 {
     public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
+    {
+        $credentials = $request->only('email', 'password');  // Mengambil hanya email dan password dari request
 
-    $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();  // Mencari user berdasarkan email yang dimasukkan
 
-    if ($user && password_verify($request->password, $user->password)) {
-        session(['user' => $user]);
+        if ($user && password_verify($request->password, $user->password)) {  // Mengecek apakah user ditemukan dan apakah password valid
+            session(['user' => $user]);  // Jika login berhasil, simpan user dalam session
 
-        switch ($user->role) {
-            case 'pemilik':
-                return redirect('/dashboard-pemilik');
-            case 'kasir':
-                return redirect('/');
-            case 'waiters':
-                return redirect('/');
-            case 'koki':
-                return redirect('/dashboard-koki');
+            switch ($user->role) {
+                case 'pemilik':  
+                    return redirect('/dashboard-pemilik');  // Arahkan ke dashboard pemilik
+                case 'kasir':  
+                    return redirect('/');  // Arahkan ke halaman beranda
+                case 'waiters':  
+                    return redirect('/');  // Arahkan ke halaman beranda
+                case 'koki':  
+                    return redirect('/dashboard-koki');  // Arahkan ke dashboard koki
+            }
         }
+
+        return redirect('/login')->withErrors(['Akun Atau Password Salah!']);  // Jika kredensial tidak valid, kembali ke halaman login dengan pesan kesalahan
     }
-
-    return redirect('/login')->withErrors(['Invalid credentials']);
-}
-
 
     public function logout()
     {
-        session()->flush();
-        return redirect('/login');
+        session()->flush();  // Menghapus semua data session untuk logout
+        return redirect('/login');  // Setelah logout, arahkan kembali ke halaman login
     }
 }
+
