@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder; // Builder digunakan untuk membuat query
 use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
-    use HasFactory;
+    // Daftar atribut yang dapat diisi secara massal
+    protected $fillable = ['kode_menu', 'kategori', 'deskripsi', 'harga'];
 
-    // Tentukan tabel yang digunakan jika nama tabel berbeda dengan pluralisasi model
-    protected $table = 'menus';
-
-    // Tentukan atribut yang dapat diisi (fillable)
-    protected $fillable = [
-        'kode_menu',
-        'kategori',
-        'deskripsi',
-        'harga',
-        'gambar_menu',
-    ];
+    public function scopeFilterBySearch(Builder $query, ?string $searchTerm): Builder
+    {
+        // Periksa apakah searchTerm tidak null atau kosong
+        return $query->when($searchTerm, function ($q) use ($searchTerm) {
+            // Terapkan pencarian pada kolom 'kode_menu', 'kategori', 'deskripsi', dan 'harga'
+            $q->where('kode_menu', 'LIKE', '%' . $searchTerm . '%')
+              ->orWhere('kategori', 'LIKE', '%' . $searchTerm . '%')
+              ->orWhere('deskripsi', 'LIKE', '%' . $searchTerm . '%')
+              ->orWhere('harga', 'LIKE', '%' . $searchTerm . '%');
+        });
+    }
 }

@@ -29,6 +29,7 @@ use App\Http\Controllers\DashboardController;
 //     return view('welcome');
 // });
 
+// Mendefinisikan route untuk HTTP GET request ke URL root ('/')
 Route::get('/', [MenuController::class, 'index']);
 
 // Halaman login
