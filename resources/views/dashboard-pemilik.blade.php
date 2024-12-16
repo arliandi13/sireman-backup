@@ -101,8 +101,8 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <ul>
-                <li><a href="#" class="btn btn-warning btn-sidebar">Laporan Keuangan</a></li>
-                <li><a href="#" class="btn btn-warning btn-sidebar">Laporan Penjualan</a></li>
+                <li><a href="{{ route('laporan_keuangan') }}" class="btn btn-warning btn-sidebar">Laporan Keuangan</a></li>
+                <li><a href="{{ route('laporan_penjualan') }}" class="btn btn-warning btn-sidebar">Laporan Penjualan</a></li>
             </ul>
         </aside>
 

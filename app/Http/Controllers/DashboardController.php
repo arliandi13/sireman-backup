@@ -40,4 +40,27 @@ class DashboardController extends Controller
         // Logika tambahan jika diperlukan
         return view('dashboard-general');
     }
+    /**
+     * Tampilkan halaman laporan keuangan untuk pemilik.
+     */
+    public function laporanKeuangan()
+    {
+        // Logika tambahan jika diperlukan, misalnya mengambil data laporan
+        $data = [
+            'laporan' => [], // Contoh: data laporan keuangan
+        ];
+
+        return view('laporankeuangan', $data);
+    }
+    public function laporanPenjualan()
+    {
+    // Logika tambahan jika diperlukan, misalnya mengambil data laporan penjualan
+    $data = [
+        'penjualan' => [], // Contoh: data laporan penjualan
+    ];
+
+    // Pastikan ini mengarah langsung ke view yang berada di resources/views/laporanpenjualan.blade.php
+    return view('laporanpenjualan', $data);
+    }
+
 }

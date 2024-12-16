@@ -44,6 +44,15 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 // Rute dashboard dengan middleware checkRole
 Route::get('/dashboard-pemilik', [DashboardController::class, 'pemilikDashboard'])->middleware('checkRole:pemilik')->name('dashboard_pemilik');
 
+// Route untuk laporan keuangan dan laporan penjualan, hanya bisa diakses oleh role "pemilik"
+Route::get('/laporan-keuangan', [DashboardController::class, 'laporanKeuangan'])
+    ->middleware('checkRole:pemilik')
+    ->name('laporan_keuangan');
+
+Route::get('/laporan-penjualan', [DashboardController::class, 'laporanPenjualan'])
+    ->middleware('checkRole:pemilik')
+    ->name('laporan_penjualan');
+
 Route::get('/dashboard-koki', [DashboardController::class, 'kokiDashboard'])->middleware('checkRole:koki')->name('dashboard_koki');
 
 // Rute untuk keranjang

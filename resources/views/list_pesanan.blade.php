@@ -70,7 +70,6 @@
         </table>
 
         <div class="d-flex justify-content-between mt-3">
-            <a href="/" class="btn btn-secondary">Kembali ke Menu</a>
             <!-- Cek apakah role pengguna adalah 'koki' -->
             @if(session('user') && session('user')->role === 'koki')
                 <a href="{{ route('dashboard_koki') }}" class="btn btn-primary">Kembali ke Dashboard Koki</a>
