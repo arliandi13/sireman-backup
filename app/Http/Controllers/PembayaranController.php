@@ -22,25 +22,52 @@ class PembayaranController extends Controller
     public function prosesPembayaran(Request $request)
     {
         $request->validate([
-            'kode_pesanan' => 'required',
+            'kode_pesanan' => 'required|exists:pesanan,kode_pesanan',
             'jumlah' => 'required|numeric|min:0',
-            'metode' => 'required|in:cash,non-cash',
-            'non_cash_detail' => 'nullable|string',
-            'authorized' => 'nullable|boolean'
+            'total_harga' => 'required|numeric|min:0',
+            'metode' => 'required|in:cash,debit,qr',
         ]);
 
-        $kembalian = $request->jumlah - $request->total_harga;
+    // Generate kode_pembayaran dengan format PEM-tanggalwaktu
+    $kodePembayaran = 'PEM-' . now()->format('YmdHis');
 
-        Pembayaran::create([
-            'kode_pesanan' => $request->kode_pesanan,
-            'jumlah' => $request->jumlah,
-            'kembalian' => $kembalian > 0 ? $kembalian : 0,
-            'metode' => $request->metode,
-            'non_cash_detail' => $request->non_cash_detail,
-            'authorized' => $request->authorized,
-        ]);
+    $kembalian = $request->jumlah - $request->total_harga;
 
-        return redirect()->route('pesanan.list')->with('success', 'Pembayaran berhasil diproses.');
+    $pembayaran = new Pembayaran();
+    $pembayaran->kode_pembayaran = $kodePembayaran;
+    $pembayaran->kode_pesanan = $request->kode_pesanan;
+    $pembayaran->jumlah = $request->jumlah;
+    $pembayaran->kembalian = $kembalian > 0 ? $kembalian : 0;
+    $pembayaran->metode = $request->metode;
+
+    // Handle pembayaran non-cash (debit & QR)
+    if ($request->metode === 'debit') {
+        $pembayaran->card_num = $request->card_num;
+        $pembayaran->exp_date = $request->exp_date;
+        $pembayaran->zjp_code = $request->zjp_code;
+        $pembayaran->pin = $request->pin;
+        $pembayaran->authorized_debit = $request->authorized_debit ?? 0;
+    } elseif ($request->metode === 'qr') {
+        $pembayaran->qr_code = $request->qr_code;
+        $pembayaran->authorized_qr = $request->authorized_qr ?? 0;
     }
+
+    $pembayaran->save();
+
+    // Tandai pesanan sebagai telah dibayar
+    $pesanan = Pesanan::where('kode_pesanan', $request->kode_pesanan)->first();
+    $pesanan->is_paid = true;
+    $pesanan->save();
+
+    return redirect()->route('list-pesanan')->with('success', 'Pembayaran berhasil diproses dengan Kode Pembayaran: ' . $kodePembayaran);
 }
 
+
+public function listPembayaran()
+{
+    $pembayaran = Pembayaran::all();
+
+    return view('list-pembayaran', compact('pembayaran'));
+}
+
+}

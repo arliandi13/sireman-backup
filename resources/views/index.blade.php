@@ -50,6 +50,7 @@
         <a href="{{ route('pesanan.keranjang') }}" class="btn btn-primary mb-3">
             Keranjang ({{ count(session('keranjang', [])) }}) <!-- Menampilkan jumlah barang di keranjang -->
         </a>
+        <a href="{{ route('pesanan.list-pesanan')}} "class="btn btn-secondary mb-3">List Pesanan</a> <!-- Button menuju List Pembayaran-->
         @endif
 
         <!-- Form Pencarian -->

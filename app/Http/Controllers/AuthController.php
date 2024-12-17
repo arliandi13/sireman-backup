@@ -1,8 +1,8 @@
 <?php
-namespace App\Http\Controllers; 
-use Illuminate\Http\Request;  
-use Illuminate\Support\Facades\Auth;  
-use App\Models\User;  
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -16,14 +16,12 @@ class AuthController extends Controller
             session(['user' => $user]);  // Jika login berhasil, simpan user dalam session
 
             switch ($user->role) {
-                case 'pemilik':  
+                case 'pemilik':
                     return redirect('/dashboard-pemilik');  // Arahkan ke dashboard pemilik
-                case 'kasir':  
+                case 'kasir':
                     return redirect('/');  // Arahkan ke halaman beranda
-                case 'waiters':  
-                    return redirect('/');  // Arahkan ke halaman beranda
-                case 'koki':  
-                    return redirect('/dashboard-koki');  // Arahkan ke dashboard koki
+                case 'koki':
+                    return redirect('/');  // Arahkan ke dashboard koki
             }
         }
 

@@ -70,3 +70,5 @@ Route::put('/profile/update', [ProfileController::class, 'update'])->name('profi
 // Rute pembayaran
 Route::get('/pembayaran/{kodePesanan}', [PembayaranController::class, 'formPembayaran'])->name('pembayaran.form')->middleware('checkRole:kasir');
 Route::post('/pembayaran', [PembayaranController::class, 'prosesPembayaran'])->name('pembayaran.proses')->middleware('checkRole:kasir');
+Route::get('/list-pembayaran', [PembayaranController::class, 'listPembayaran'])->name('list-pembayaran');
+
