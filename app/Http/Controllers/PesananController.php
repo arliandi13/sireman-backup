@@ -115,11 +115,13 @@ public function simpanPesanan(Request $request)
     return redirect()->route('pesanan.list-pesanan')->with('success', 'Pesanan berhasil disimpan.');
 }
 
+public function listPesanan()
+{
+    // Ambil data pesanan dengan is_paid = 0
+    $pesanan = Pesanan::where('is_paid', 0)->get();
 
+    // Kirim data ke view
+    return view('list_pesanan', compact('pesanan'));
+}
 
-    public function listPesanan()
-    {
-        $pesanan = Pesanan::all();
-        return view('list_pesanan', compact('pesanan'));
-    }
 }

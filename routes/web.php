@@ -8,6 +8,7 @@ use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KokiController;
 
 
 
@@ -53,7 +54,11 @@ Route::get('/laporan-penjualan', [DashboardController::class, 'laporanPenjualan'
     ->middleware('checkRole:pemilik')
     ->name('laporan_penjualan');
 
-Route::get('/dashboard-koki', [DashboardController::class, 'kokiDashboard'])->middleware('checkRole:koki')->name('dashboard_koki');
+    Route::middleware(['checkRole:koki'])->group(function () {
+        Route::get('/dashboard-koki', [KokiController::class, 'kokiDashboard'])->name('dashboard-koki');
+        Route::put('/pesanan/{kodePesanan}/update-status', [KokidController::class, 'updateStatus'])->name('update_status');
+    });
+
 
 // Rute untuk keranjang
 Route::post('/tambah-ke-keranjang', [PesananController::class, 'tambahKeKeranjang'])->name('pesanan.tambah')->middleware('checkRole:waiters,kasir');

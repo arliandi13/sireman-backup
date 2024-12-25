@@ -44,7 +44,7 @@ class PembayaranController extends Controller
     $pembayaran->kode_pembayaran = $kodePembayaran;
     $pembayaran->kode_pesanan = $request->kode_pesanan;
     $pembayaran->jumlah = $request->jumlah;
-    $pembayaran->kembalian = $kembalian > 0 ? $kembalian : 0;
+    $pembayaran->kembalian = max(0, $kembalian); // Ensure kembalian is not negative
     $pembayaran->metode = $request->metode;
 
     // Handle data tambahan berdasarkan metode
@@ -53,30 +53,32 @@ class PembayaranController extends Controller
         $pembayaran->exp_date = $request->exp_date;
         $pembayaran->zjp_code = $request->zjp_code;
         $pembayaran->pin = $request->pin;
+        // Assuming authorized_debit is part of your request (not shown in validation)
         $pembayaran->authorized_debit = $request->authorized_debit ?? 0;
     } elseif ($request->metode === 'qr') {
         $pembayaran->qr_code = $request->qr_code;
+        // Assuming authorized_qr is part of your request (not shown in validation)
         $pembayaran->authorized_qr = $request->authorized_qr ?? 0;
     }
 
+    // Save payment record
     $pembayaran->save();
 
     // Tandai pesanan sebagai telah dibayar
-    $pesanan = Pesanan::where('kode_pesanan', $request->kode_pesanan)->first();
-    $pesanan->is_paid = 1; // Ubah menjadi dibayar
-    $pesanan->save();
+    Pesanan::where('kode_pesanan', $request->kode_pesanan)->update([
+        'is_paid' => 1,
+        'updated_at' => now() // Set updated_at to current timestamp
+    ]);
 
-    return redirect()->route('list-pesanan')
+    return redirect()->route('pesanan.list-pesanan')
         ->with('success', 'Pembayaran berhasil diproses dengan Kode Pembayaran: ' . $kodePembayaran);
 }
 
+    public function listPembayaran()
+    {
+        $pembayaran = Pembayaran::all();
 
-
-public function listPembayaran()
-{
-    $pembayaran = Pembayaran::all();
-
-    return view('list-pembayaran', compact('pembayaran'));
-}
+        return view('list-pembayaran', compact('pembayaran'));
+    }
 
 }
