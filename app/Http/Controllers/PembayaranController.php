@@ -44,7 +44,7 @@ class PembayaranController extends Controller
     $pembayaran->kode_pembayaran = $kodePembayaran;
     $pembayaran->kode_pesanan = $request->kode_pesanan;
     $pembayaran->jumlah = $request->jumlah;
-    $pembayaran->kembalian = max(0, $kembalian); // Ensure kembalian is not negative
+    $pembayaran->kembalian = max(0, $kembalian); // Pastikan kembalian tidak negatif
     $pembayaran->metode = $request->metode;
 
     // Handle data tambahan berdasarkan metode
@@ -53,21 +53,21 @@ class PembayaranController extends Controller
         $pembayaran->exp_date = $request->exp_date;
         $pembayaran->zjp_code = $request->zjp_code;
         $pembayaran->pin = $request->pin;
-        // Assuming authorized_debit is part of your request (not shown in validation)
+        // Dengan asumsi authorized_debit adalah bagian dari permintaan (tidak ditampilkan dalam validasi)
         $pembayaran->authorized_debit = $request->authorized_debit ?? 0;
     } elseif ($request->metode === 'qr') {
         $pembayaran->qr_code = $request->qr_code;
-        // Assuming authorized_qr is part of your request (not shown in validation)
+        // Dengan asumsi authorized_qr adalah bagian dari permintaan (tidak ditampilkan dalam validasi)
         $pembayaran->authorized_qr = $request->authorized_qr ?? 0;
     }
 
-    // Save payment record
+    // Menyimpan catatan pembayaran
     $pembayaran->save();
 
     // Tandai pesanan sebagai telah dibayar
     Pesanan::where('kode_pesanan', $request->kode_pesanan)->update([
         'is_paid' => 1,
-        'updated_at' => now() // Set updated_at to current timestamp
+        'updated_at' => now() // Setel updated_at ke stempel waktu saat ini
     ]);
 
     return redirect()->route('pesanan.list-pesanan')
