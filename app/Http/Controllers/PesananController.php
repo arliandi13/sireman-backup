@@ -112,7 +112,7 @@ public function simpanPesanan(Request $request)
 
     session()->forget('keranjang');
 
-    return redirect()->route('pesanan.list')->with('success', 'Pesanan berhasil disimpan.');
+    return redirect()->route('pesanan.list-pesanan')->with('success', 'Pesanan berhasil disimpan.');
 }
 
 

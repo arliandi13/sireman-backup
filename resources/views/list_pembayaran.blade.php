@@ -29,13 +29,14 @@
                 <td>{{ number_format($pay->kembalian, 2) }}</td>
                 <td>{{ $pay->created_at }}</td>
                 <td>
-                    <form action="{{ route('print-pembayaran', $pay->id) }}" method="GET">
+                    {{-- <form action="{{ route('print-pembayaran', $pay->id) }}" method="GET">
                         <button type="submit">Print</button>
-                    </form>
+                    </form> --}}
+                    <button type="submit">Print</button>
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
-    
+
 </body>

@@ -32,7 +32,6 @@
             <div>
                 @if(session('user') && (session('user')->role === 'kasir')) <!-- Menampilkan menu jika user adalah 'kasir' -->
                 <span class="me-3">Hello, {{ session('user')->name }}</span>
-                <a href="/profile" class="btn btn-outline-primary btn-sm">Profile</a>
                 <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
                 @else
                 <a href="/login" class="btn btn-outline-primary btn-sm">Login</a>

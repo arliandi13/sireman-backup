@@ -73,6 +73,8 @@
             <!-- Cek apakah role pengguna adalah 'koki' -->
             @if(session('user') && session('user')->role === 'koki')
                 <a href="{{ route('dashboard_koki') }}" class="btn btn-primary">Kembali ke Dashboard Koki</a>
+                @elseif (session('user') && session('user')->role === 'kasir')
+                <a href="/" class="btn btn-primary">Kembali</a>
             @endif
         </div>
     </div>

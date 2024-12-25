@@ -62,11 +62,6 @@ Route::post('/keranjang/update', [PesananController::class, 'updateKeranjang'])-
 Route::post('/simpan-pesanan', [PesananController::class, 'simpanPesanan'])->name('pesanan.simpan')->middleware('checkRole:waiters,kasir');
 Route::get('/list-pesanan', [PesananController::class, 'listPesanan'])->name('pesanan.list-pesanan')->middleware('checkRole:koki,kasir');
 
-// Rute profil pengguna
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show')->middleware('auth');
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit')->middleware('auth');
-Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
-
 // Rute pembayaran
 Route::get('/pembayaran/{kodePesanan}', [PembayaranController::class, 'formPembayaran'])->name('pembayaran.form')->middleware('checkRole:kasir');
 Route::post('/pembayaran', [PembayaranController::class, 'prosesPembayaran'])->name('pembayaran.proses')->middleware('checkRole:kasir');
