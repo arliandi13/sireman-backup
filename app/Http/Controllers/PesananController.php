@@ -113,6 +113,7 @@ class PesananController extends Controller
         return redirect()->route('pesanan.list')->with('success', 'Pesanan berhasil disimpan.');
     }
 
+<<<<<<< HEAD
     // Menampilkan daftar pesanan
     public function listPesanan()
     {
@@ -155,4 +156,35 @@ class PesananController extends Controller
         // Kembalikan view dengan data pesanan
         return view('pesanan.show', compact('pesanan'));
     }
+=======
+    $totalHarga = collect($detailPesanan)->reduce(function ($carry, $item) {
+        return $carry + ($item['harga'] * $item['jumlah']);
+    }, 0);
+
+    Pesanan::create([
+        'kode_pesanan' => 'PES-' . time(),
+        'nama_pelanggan' => $request->input('nama_pelanggan'),
+        'bangku' => $request->input('bangku'),
+        'is_bawa_pulang' => $request->input('is_bawa_pulang') ? 1 : 0,
+        'catatan_tambahan' => $request->input('catatan_tambahan'),
+        'detail_pesanan' => json_encode($detailPesanan),
+        'total_harga' => $totalHarga,
+        'status' => 'Dalam Antrian',
+    ]);
+
+    session()->forget('keranjang');
+
+    return redirect()->route('pesanan.list-pesanan')->with('success', 'Pesanan berhasil disimpan.');
+}
+
+public function listPesanan()
+{
+    // Ambil data pesanan dengan is_paid = 0
+    $pesanan = Pesanan::where('is_paid', 0)->get();
+
+    // Kirim data ke view
+    return view('list_pesanan', compact('pesanan'));
+}
+
+>>>>>>> 7681455b333b85a3879ac36880cc98076c537919
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KokiController;
 
 
 
@@ -48,7 +49,11 @@ Route::get('/dashboard-pemilik', [DashboardController::class, 'pemilikDashboard'
 Route::get('/laporan-keuangan', [DashboardController::class, 'laporanKeuangan'])->middleware('checkRole:pemilik')->name('laporan_keuangan');
 Route::get('/laporan-penjualan', [DashboardController::class, 'laporanPenjualan'])->middleware('checkRole:pemilik')->name('laporan_penjualan');
 
-Route::get('/dashboard-koki', [DashboardController::class, 'kokiDashboard'])->middleware('checkRole:koki')->name('dashboard_koki');
+//koki
+Route::middleware(['checkRole:koki'])->group(function () {
+        Route::get('/dashboard-koki', [KokiController::class, 'kokiDashboard'])->name('dashboard-koki');
+        Route::post('/pesanan/{kodePesanan}/update-status', [KokiController::class, 'updateStatus'])->name('update-status');
+    });
 
 // Rute untuk keranjang
 Route::post('/tambah-ke-keranjang', [PesananController::class, 'tambahKeKeranjang'])->name('pesanan.tambah')->middleware('checkRole:waiters,kasir');
@@ -57,6 +62,7 @@ Route::post('/keranjang/update', [PesananController::class, 'updateKeranjang'])-
 Route::post('/simpan-pesanan', [PesananController::class, 'simpanPesanan'])->name('pesanan.simpan')->middleware('checkRole:waiters,kasir');
 Route::get('/list-pesanan', [PesananController::class, 'listPesanan'])->name('pesanan.list-pesanan')->middleware('checkRole:koki,kasir');
 
+<<<<<<< HEAD
 
 // Route untuk mengupdate status pesanan
 Route::put('/update-status/{kodePesanan}', [PesananController::class, 'updateStatus'])->name('update.status');
@@ -66,6 +72,8 @@ Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show')
 Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit')->middleware('auth');
 Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update')->middleware('auth');
 
+=======
+>>>>>>> 7681455b333b85a3879ac36880cc98076c537919
 // Rute pembayaran
 Route::get('/pembayaran/{kodePesanan}', [PembayaranController::class, 'formPembayaran'])->name('pembayaran.form')->middleware('checkRole:kasir');
 Route::post('/pembayaran', [PembayaranController::class, 'prosesPembayaran'])->name('pembayaran.proses')->middleware('checkRole:kasir');

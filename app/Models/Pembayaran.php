@@ -10,8 +10,19 @@ class Pembayaran extends Model
     use HasFactory;
 
     protected $table = 'pembayaran';
-    protected $primaryKey = 'kode_pembayaran';
+
     protected $fillable = [
-        'kode_pesanan', 'jumlah', 'kembalian', 'metode', 'non_cash_detail', 'authorized'
+        'kode_pembayaran',
+        'kode_pesanan',
+        'jumlah',
+        'kembalian',
+        'metode',
+        'card_num',
+        'exp_date',
+        'zjp_code',
+        'pin',
+        'authorized_debit',
+        'qr_code',
+        'authorized_qr',
     ];
 }
