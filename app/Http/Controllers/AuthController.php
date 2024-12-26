@@ -21,7 +21,7 @@ class AuthController extends Controller
                 case 'kasir':
                     return redirect('/');  // Arahkan ke halaman beranda
                 case 'koki':
-                    return redirect('/');  // Arahkan ke dashboard koki
+                    return redirect('/dashboard-koki');  // Arahkan ke dashboard koki
             }
         }
 

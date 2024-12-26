@@ -9,7 +9,14 @@ class Pesanan extends Model
 {
     use HasFactory;
 
+    // Tentukan nama tabel jika berbeda
     protected $table = 'pesanan';
+
+    // Tentukan kolom primary key yang digunakan
+    protected $primaryKey = 'kode_pesanan';
+
+    // Nonaktifkan auto-increment karena kode_pesanan bukan integer auto-increment
+    public $incrementing = false;
 
     protected $fillable = [
         'kode_pesanan',
