@@ -20,6 +20,7 @@ class PesananController extends Controller
     public function tambahKeKeranjang(Request $request)
     {
         $user = session('user');
+
         if (!in_array($user->role, ['waiters', 'kasir'])) {
             abort(403, 'Unauthorized action.');
         }
@@ -37,8 +38,9 @@ class PesananController extends Controller
 
         session()->put('keranjang', $keranjang);
 
-        return redirect()->back()->with('success', 'Menu berhasil ditambahkan ke keranjang.')
-                               ->with('keranjang_debug', session()->get('keranjang'));
+        return redirect()->back()
+            ->with('success', 'Menu berhasil ditambahkan ke keranjang.')
+            ->with('keranjang_debug', session()->get('keranjang'));
     }
 
     // Melihat keranjang
@@ -113,7 +115,6 @@ class PesananController extends Controller
         return redirect()->route('pesanan.list')->with('success', 'Pesanan berhasil disimpan.');
     }
 
-<<<<<<< HEAD
     // Menampilkan daftar pesanan
     public function listPesanan()
     {
@@ -142,10 +143,9 @@ class PesananController extends Controller
         return redirect()->back()->with('success', 'Status berhasil diperbarui');
     }
 
-
+    // Menampilkan detail pesanan berdasarkan kode_pesanan
     public function show($kode_pesanan)
     {
-        // Mencari pesanan berdasarkan kode_pesanan
         $pesanan = Pesanan::where('kode_pesanan', $kode_pesanan)->first();
 
         // Jika pesanan tidak ditemukan, tampilkan halaman 404
@@ -153,38 +153,6 @@ class PesananController extends Controller
             abort(404);
         }
 
-        // Kembalikan view dengan data pesanan
         return view('pesanan.show', compact('pesanan'));
     }
-=======
-    $totalHarga = collect($detailPesanan)->reduce(function ($carry, $item) {
-        return $carry + ($item['harga'] * $item['jumlah']);
-    }, 0);
-
-    Pesanan::create([
-        'kode_pesanan' => 'PES-' . time(),
-        'nama_pelanggan' => $request->input('nama_pelanggan'),
-        'bangku' => $request->input('bangku'),
-        'is_bawa_pulang' => $request->input('is_bawa_pulang') ? 1 : 0,
-        'catatan_tambahan' => $request->input('catatan_tambahan'),
-        'detail_pesanan' => json_encode($detailPesanan),
-        'total_harga' => $totalHarga,
-        'status' => 'Dalam Antrian',
-    ]);
-
-    session()->forget('keranjang');
-
-    return redirect()->route('pesanan.list-pesanan')->with('success', 'Pesanan berhasil disimpan.');
-}
-
-public function listPesanan()
-{
-    // Ambil data pesanan dengan is_paid = 0
-    $pesanan = Pesanan::where('is_paid', 0)->get();
-
-    // Kirim data ke view
-    return view('list_pesanan', compact('pesanan'));
-}
-
->>>>>>> 7681455b333b85a3879ac36880cc98076c537919
 }
