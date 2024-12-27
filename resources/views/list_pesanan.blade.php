@@ -75,6 +75,22 @@
         .navbar .btn {
             color: white;
         }
+        .btn-status {
+        border-radius: 20px; /* Membuat tombol berbentuk oval */
+        font-weight: bold;   /* Memberikan teks yang tebal */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-status i {
+        margin-right: 5px; /* Memberikan jarak antara ikon dan teks */
+    }
+
+    .btn-status.active {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Efek bayangan pada tombol aktif */
+        transform: scale(1.05); /* Efek pembesaran pada tombol aktif */
+    }
     </style>
 </head>
 
@@ -185,22 +201,33 @@
                                     <p><strong>Catatan:</strong> {{ $pesan->catatan_tambahan }}</p>
 
                                     @if(session('user') && session('user')->role === 'koki')
+                                    <div class="d-flex gap-2">
                                     <form action="{{ route('update.status', $pesan->kode_pesanan) }}" method="POST">
                                         @csrf
                                         @method('PUT')
-                                        <div class="mb-3">
-                                            <label for="status" class="form-label">Ubah Status Pesanan</label>
-                                            <select name="status" class="form-select">
-                                                <option value="Dalam Antrian" {{ $pesan->status == 'Dalam Antrian' ? 'selected' : '' }}>Dalam Antrian</option>
-                                                <option value="Sedang Disiapkan" {{ $pesan->status == 'Sedang Disiapkan' ? 'selected' : '' }}>Sedang Disiapkan</option>
-                                                <option value="Siap Diantar" {{ $pesan->status == 'Siap Diantar' ? 'selected' : '' }}>Siap Diantar</option>
-                                                <option value="Selesai" {{ $pesan->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                                <option value="Dibatalkan" {{ $pesan->status == 'Dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-                                                <option value="Disiapkan" {{ $pesan->status == 'Disiapkan' ? 'selected' : '' }}>Disiapkan</option>
-                                            </select>
+
+                                            <button type="submit" name="status" value="Dalam Antrian" class="btn btn-outline-primary {{ $pesan->status == 'Dalam Antrian' ? 'active' : '' }}">
+                                                <div class="d-flex gap-2"></i> Dalam Antrian
+                                            </button>
+
+                                            <button type="submit" name="status" value="Sedang Disiapkan" class="btn btn-outline-warning {{ $pesan->status == 'Sedang Disiapkan' ? 'active' : '' }}">
+                                                <i class="fas fa-spinner"></i> Sedang Disiapkan
+                                            </button>
+
+                                            <button type="submit" name="status" value="Siap Diantar" class="btn btn-outline-success {{ $pesan->status == 'Siap Diantar' ? 'active' : '' }}">
+                                                 <i class="fas fa-utensils"></i> Siap Diantar
+                                            </button>
+
+                                            <button type="submit" name="status" value="Selesai" class="btn btn-outline-secondary {{ $pesan->status == 'Selesai' ? 'active' : '' }}">
+                                               <i class="fas fa-clipboard-check"></i> Selesai
+                                            </button>
+
+                                            <button type="submit" name="status" value="Dibatalkan" class="btn btn-outline-danger {{ $pesan->status == 'Dibatalkan' ? 'active' : '' }}">
+                                               <i class="fas fa-times-circle"></i> Dibatalkan
+                                            </button>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                     </form>
+
                                     @endif
                                 </div>
                                 <div class="modal-footer">

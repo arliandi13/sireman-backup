@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Pembayaran; // Pastikan model Pembayaran digunakan untuk mengambil data dari database
+use App\Models\Pesanan; // Jika Anda ingin mengambil data pesanan terkait laporan penjualan
 
 class DashboardController extends Controller
 {
@@ -11,12 +13,10 @@ class DashboardController extends Controller
      */
     public function kokiDashboard()
     {
-        // Logika tambahan jika diperlukan, misalnya mengambil data tertentu
-        $data = [
-            'orders' => [], // Contoh: mengambil pesanan dari database
-        ];
+        // Ambil pesanan yang sedang diproses atau baru untuk koki
+        $orders = Pesanan::where('status', 'in_progress')->get();
 
-        return view('dashboard-koki', $data);
+        return view('dashboard-koki', compact('orders'));
     }
 
     /**
@@ -24,12 +24,13 @@ class DashboardController extends Controller
      */
     public function pemilikDashboard()
     {
-        // Logika tambahan jika diperlukan, misalnya statistik pendapatan
-        $data = [
-            'statistics' => [], // Contoh: data statistik untuk pemilik
+        // Ambil data statistik untuk pemilik
+        $statistics = [
+            'totalOrders' => Pesanan::count(), // Total pesanan
+            'totalPembayaran' => Pembayaran::sum('jumlah'), // Total pembayaran
         ];
 
-        return view('dashboard-pemilik', $data);
+        return view('dashboard-pemilik', compact('statistics'));
     }
 
     /**
@@ -37,30 +38,70 @@ class DashboardController extends Controller
      */
     public function generalDashboard()
     {
-        // Logika tambahan jika diperlukan
+        // Logika tambahan jika diperlukan untuk pengguna umum
         return view('dashboard-general');
     }
+
     /**
      * Tampilkan halaman laporan keuangan untuk pemilik.
      */
-    public function laporanKeuangan()
+    public function laporanKeuangan(Request $request)
     {
-        // Logika tambahan jika diperlukan, misalnya mengambil data laporan
+        // Ambil data pembayaran dari database dengan filter tanggal jika ada
+        $query = Pembayaran::query();
+
+        // Periksa apakah parameter tanggal_awal dan tanggal_akhir ada
+        if ($request->has('tanggal_awal') && $request->has('tanggal_akhir')) {
+            // Menggunakan whereBetween untuk filter data berdasarkan rentang tanggal
+            $query->whereBetween('created_at', [
+                $request->tanggal_awal,
+                $request->tanggal_akhir
+            ]);
+        }
+
+        // Ambil data pembayaran yang sudah difilter
+        $pembayaran = $query->get();
+
+        // Hitung total pendapatan
+        $totalPendapatan = $pembayaran->sum('jumlah');
+
+        // Format data untuk dikirim ke view
         $data = [
-            'laporan' => [], // Contoh: data laporan keuangan
+            'pembayaran' => $pembayaran,
+            'totalPendapatan' => $totalPendapatan,
         ];
 
         return view('laporankeuangan', $data);
     }
-    public function laporanPenjualan()
+
+    /**
+     * Tampilkan halaman laporan penjualan untuk pemilik.
+     */
+    public function laporanPenjualan(Request $request)
     {
-    // Logika tambahan jika diperlukan, misalnya mengambil data laporan penjualan
-    $data = [
-        'penjualan' => [], // Contoh: data laporan penjualan
-    ];
+        // Ambil data pesanan berdasarkan status dan filter tanggal jika ada
+        $query = Pesanan::query();
 
-    // Pastikan ini mengarah langsung ke view yang berada di resources/views/laporanpenjualan.blade.php
-    return view('laporanpenjualan', $data);
+        // Filter berdasarkan tanggal jika ada
+        if ($request->tanggal_awal && $request->tanggal_akhir) {
+            $query->whereBetween('created_at', [
+                $request->tanggal_awal,
+                $request->tanggal_akhir
+            ]);
+        }
+
+        // Ambil data pesanan yang telah selesai atau yang sedang diproses
+        $penjualan = $query->whereIn('status', ['completed', 'paid'])->get();
+
+        // Hitung total penjualan
+        $totalPenjualan = $penjualan->sum('total_harga');
+
+        // Format data untuk dikirim ke view
+        $data = [
+            'penjualan' => $penjualan, // Data laporan penjualan
+            'totalPenjualan' => $totalPenjualan, // Total penjualan
+        ];
+
+        return view('laporanpenjualan', $data);
     }
-
 }

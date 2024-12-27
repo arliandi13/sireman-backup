@@ -125,23 +125,13 @@ class PesananController extends Controller
     // Memperbarui status pesanan
     public function updateStatus(Request $request, $kodePesanan)
     {
-        // Validasi status yang dikirimkan
-        $request->validate([
-            'status' => 'required|in:Dalam Antrian,Sedang Disiapkan,Siap Diantar,Selesai,Dibatalkan,Disiapkan',
-        ]);
+        $pesanan = Pesanan::where('kode_pesanan', $kodePesanan)->firstOrFail();
+        $pesanan->status = $request->status;
+        $pesanan->save();
 
-        // Mencari Pesanan berdasarkan kode_pesanan
-        $pesanan = Pesanan::where('kode_pesanan', $kodePesanan)->first();
-
-        // Jika pesanan ditemukan, perbarui statusnya
-        if ($pesanan) {
-            $pesanan->status = $request->status;
-            $pesanan->save();
-        }
-
-        // Redirect kembali ke halaman sebelumnya
-        return redirect()->back()->with('success', 'Status berhasil diperbarui');
+        return back()->with('success', 'Status pesanan berhasil diperbarui!');
     }
+
 
     // Menampilkan detail pesanan berdasarkan kode_pesanan
     public function show($kode_pesanan)

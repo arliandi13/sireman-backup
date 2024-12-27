@@ -77,22 +77,23 @@
 
     <!-- Container -->
     <div class="container">
-        <div class="filter-section mb-4">
-            <div class="row">
-                <div class="col-md-4">
-                    <label for="tanggal-awal">Tanggal Awal</label>
-                    <input type="date" class="form-control" id="tanggal-awal">
-                </div>
-                <div class="col-md-4">
-                    <label for="tanggal-akhir">Tanggal Akhir</label>
-                    <input type="date" class="form-control" id="tanggal-akhir">
-                </div>
-                <div class="col-md-4 d-flex align-items-end">
-                    <button class="btn btn-success me-2">File</button>
-                    <button class="btn btn-primary">Cetak Semua File</button>
+        <form action="{{ route('laporan_keuangan') }}" method="GET">
+            <div class="filter-section mb-4">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="tanggal-awal">Tanggal Awal</label>
+                        <input type="date" class="form-control" id="tanggal-awal" name="tanggal_awal" value="{{ request()->get('tanggal_awal') }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="tanggal-akhir">Tanggal Akhir</label>
+                        <input type="date" class="form-control" id="tanggal-akhir" name="tanggal_akhir" value="{{ request()->get('tanggal_akhir') }}">
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success me-2">Filter</button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
 
         <!-- Table Section -->
         <table class="table table-bordered">
@@ -102,34 +103,28 @@
                     <th>Tanggal</th>
                     <th>Keterangan</th>
                     <th>Pemasukan</th>
-                    <th>Pengeluaran</th>
-                    <th>Saldo</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Dummy Data -->
-                @for ($i = 1; $i <= 5; $i++)
+                @foreach ($pembayaran as $pay)
                 <tr>
-                    <td>TRX-00{{ $i }}</td>
-                    <td>04-06-2024</td>
-                    <td>Deskripsi Transaksi {{ $i }}</td>
-                    <td>Rp. 500.000</td>
-                    <td>Rp. 200.000</td>
-                    <td>Rp. 300.000</td>
+                    <td>{{ $pay->kode_pembayaran }}</td>
+                    <td>{{ $pay->created_at->format('d-m-Y') }}</td>
+                    <td>{{ 'Pembayaran untuk Pesanan ' . $pay->kode_pesanan }}</td>
+                    <td>Rp. {{ number_format($pay->jumlah, 0, ',', '.') }}</td>
                     <td>
                         <button class="btn btn-sm btn-explore">Eksplor</button>
                         <button class="btn btn-sm btn-file">Cetak File</button>
                     </td>
                 </tr>
-                @endfor
+                @endforeach
             </tbody>
         </table>
     </div>
     <div class="d-flex justify-content-between mt-3">
-        <!-- Cek apakah role pengguna adalah 'koki' -->
         @if(session('user') && session('user')->role === 'pemilik')
-            <a href="{{ route('dashboard_pemilik') }}" class="btn btn-primary">Kembali ke Dashboard pemilik</a>
+            <a href="{{ route('dashboard_pemilik') }}" class="btn btn-primary">Kembali ke Dashboard Pemilik</a>
         @endif
     </div>
 

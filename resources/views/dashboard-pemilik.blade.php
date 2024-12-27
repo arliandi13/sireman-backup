@@ -60,17 +60,6 @@
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .charts {
-            display: flex;
-            margin-top: 20px;
-            gap: 20px;
-        }
-
-        .chart {
-            flex: 1;
-            text-align: center;
-        }
-
         .ratings {
             margin-top: 20px;
             text-align: center;
@@ -128,18 +117,6 @@
                 </div>
             </div>
 
-            <!-- Charts Section -->
-            <div class="charts">
-                <div class="chart">
-                    <h5>Grafik Pendapatan Tahunan</h5>
-                    <canvas id="barChart"></canvas>
-                </div>
-                <div class="chart">
-                    <h5>Total Stok Bahan Baku Berdasarkan Kategori</h5>
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
-
             <!-- Ratings Section -->
             <div class="ratings">
                 <h5>Rating & Ulasan</h5>
@@ -147,36 +124,5 @@
             </div>
         </main>
     </div>
-
-    <!-- Script untuk Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Bar Chart
-        const ctxBar = document.getElementById('barChart').getContext('2d');
-        new Chart(ctxBar, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Pendapatan',
-                    data: [30000, 40000, 35000, 50000, 60000, 55000, 70000, 65000, 50000, 45000, 40000, 60000],
-                    backgroundColor: '#ff9800',
-                }]
-            },
-        });
-
-        // Pie Chart
-        const ctxPie = document.getElementById('pieChart').getContext('2d');
-        new Chart(ctxPie, {
-            type: 'pie',
-            data: {
-                labels: ['Item A', 'Item B', 'Item C', 'Item D'],
-                datasets: [{
-                    data: [15, 23, 27, 35],
-                    backgroundColor: ['#ff9800', '#4caf50', '#2196f3', '#f44336'],
-                }]
-            },
-        });
-    </script>
 </body>
 </html>
