@@ -68,7 +68,7 @@ class CustomerAuthController extends Controller
     public function dashboard()
     {
         if (!session()->has('customer')) {
-            return redirect('/login')->withErrors(['error' => 'Silakan login terlebih dahulu!']);
+            return redirect('/login-customer')->withErrors(['error' => 'Silakan login terlebih dahulu!']);
         }
 
         $customer = session('customer');

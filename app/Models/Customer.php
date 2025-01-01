@@ -17,9 +17,9 @@ class Customer extends Model
         'password',
     ];
 
-    //  timestamps untuk kolom created_at dan updated_at
+    // Tambahkan timestamps jika table menggunakan kolom created_at dan updated_at
     public $timestamps = true;
 
-    // Jika tidak
+    // Jika tidak menggunakan kolom timestamps
     // public $timestamps = false;
 }
