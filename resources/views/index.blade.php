@@ -93,13 +93,13 @@
                                 <h5 class="card-title">{{ $menu->deskripsi }}</h5>
                                 <p class="card-text">Harga: Rp{{ number_format($menu->harga, 0, ',', '.') }}</p> <!-- Harga dalam format lokal -->
                                 <p class="card-text">Kategori: {{ ucfirst($menu->kategori) }}</p> <!-- Menggunakan 'ucfirst' untuk kapitalisasi pertama karakter kategori -->
-                                @if(session('user') && (session('user')->role === 'kasir')) <!-- Hanya ditampilkan untuk user dengan role 'kasir' -->
-                                    <!-- Form untuk Menambahkan Pesanan -->
-                                    <form action="{{ route('pesanan.tambah') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="kode_menu" value="{{ $menu->kode_menu }}">
-                                        <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
-                                    </form>
+                                @if((session('user') && session('user')->role === 'kasir') || session('customer'))
+                                <!-- Form untuk Menambahkan Pesanan -->
+                                <form action="{{ route('pesanan.tambah') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="kode_menu" value="{{ $menu->kode_menu }}">
+                                    <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
+                                </form>
                                 @endif
                             </div>
                         </div>
