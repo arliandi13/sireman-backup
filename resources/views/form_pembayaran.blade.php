@@ -72,7 +72,9 @@
             <div id="qr-details" style="display: none;">
                 <div class="mb-3">
                     <label for="qr_code" class="form-label">Scan QR Code</label>
-                    <input type="text" name="qr_code" id="qr_code" class="form-control" placeholder="Masukkan Kode QR">
+                    <div>
+                        <img src="{{ asset('images/Screenshot_1.png') }}" alt="QR Code" class="img-fluid" style="max-width: 200px; height: auto;">
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="authorized_qr" class="form-label">Authorized</label>
@@ -107,7 +109,6 @@
         // Trigger toggle on load
         togglePaymentDetails();
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
