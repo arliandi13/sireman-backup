@@ -29,7 +29,7 @@ class CustomerAuthController extends Controller
             // Simpan session customer
             session(['customer' => $customer]);
 
-            return redirect('/customer/dashboard')->with('success', 'Berhasil login!');
+            return redirect('/')->with('success', 'Berhasil login!');
         }
 
         return back()->withErrors(['error' => 'Email atau password salah']);
@@ -53,7 +53,7 @@ class CustomerAuthController extends Controller
         // Simpan session customer setelah registrasi
         session(['customer' => $customer]);
 
-        return redirect('/customer/dashboard')->with('success', 'Berhasil mendaftar!');
+        return redirect('/login-customer')->with('success', 'Berhasil mendaftar!');
     }
 
     // Logout

@@ -30,13 +30,19 @@
                 SIREMAN
             </a>
             <div>
-                @if(session('user') && (session('user')->role === 'kasir')) <!-- Menampilkan menu jika user adalah 'kasir' -->
-                <span class="me-3">Hello, {{ session('user')->name }}</span>
-                <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+                @if(session('user') && session('user')->role === 'kasir')
+                    <!-- Menampilkan menu jika user adalah 'kasir' -->
+                    <span class="me-3">Hello, {{ session('user')->name }}</span>
+                    <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+                @elseif(session('customer'))
+                    <!-- Menampilkan menu jika yang login adalah 'customer' -->
+                    <span class="me-3">Hello, {{ session('customer')->name }}</span>
+                    <a href="/customer/logout" class="btn btn-outline-danger btn-sm">Logout</a>
                 @else
-                <a href="/login" class="btn btn-outline-primary btn-sm">Login</a>
+                    <!-- Menampilkan menu jika belum ada yang login -->
+                    <a href="/login-customer" class="btn btn-outline-primary btn-sm">Login</a>
                 @endif
-            </div>
+            </div>            
         </div>
     </nav>
 
@@ -45,12 +51,18 @@
         <h1 class="my-4">Menu</h1>
 
         <!-- Tombol Keranjang & List Pesanan -->
-        @if(session('user') && (session('user')->role === 'kasir'))
+        @if(session('user') && session('user')->role === 'kasir') <!-- Tindakan jika user adalah kasir -->
         <a href="{{ route('pesanan.keranjang') }}" class="btn btn-primary mb-3">
             Keranjang ({{ count(session('keranjang', [])) }}) <!-- Menampilkan jumlah barang di keranjang -->
         </a>
         <a href="{{ route('pesanan.list-pesanan')}} "class="btn btn-secondary mb-3">List Pesanan</a> <!-- Button menuju List Pembayaran-->
         <a href="{{ route('list-pembayaran')}} "class="btn btn-info mb-3">List Pembayaran</a>
+        @elseif(session('customer')) <!-- Tindakan jika user adalah customer -->
+        <a href="{{ route('pesanan.keranjang') }}" class="btn btn-primary mb-3">
+            Keranjang ({{ count(session('keranjang', [])) }}) <!-- Menampilkan jumlah barang di keranjang -->
+        </a>
+        @else
+        <!-- Tindakan jika tidak ada yang login -->
         @endif
 
         <!-- Form Pencarian -->

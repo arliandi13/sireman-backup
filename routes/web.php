@@ -39,9 +39,6 @@ Route::get('/login-customer', [CustomerAuthController::class, 'showLoginForm'])-
 Route::post('/login-customer', [CustomerAuthController::class, 'login'])->name('customer.login.post');
 Route::post('/register-customer', [CustomerAuthController::class, 'register'])->name('customer.register');
 
-// Dashboard pelanggan
-Route::get('/customer/dashboard', [CustomerAuthController::class, 'dashboard'])->name('customer.dashboard');
-
 // Logout pelanggan
 Route::get('/customer/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
 
