@@ -88,3 +88,23 @@ Route::put('/update-status/{kodePesanan}', [PesananController::class, 'updateSta
 
 Route::get('/pesanan/{kode_pesanan}', [PesananController::class, 'show'])
     ->name('pesanan.detail');
+
+/*
+silahkan di modifikasi from marco
+use App\Http\Controllers\CustomerAuthController;
+
+Route::middleware('guest:customer')->group(function () {
+    Route::get('login', [CustomerAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [CustomerAuthController::class, 'login']);
+    Route::get('register', [CustomerAuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('register', [CustomerAuthController::class, 'register']);
+});
+
+Route::middleware('auth:customer')->group(function () {
+    Route::get('dashboard', function () {
+        return 'Customer Dashboard'; // Ganti dengan tampilan dashboard Anda
+    })->name('customer.dashboard');
+    Route::post('logout', [CustomerAuthController::class, 'logout'])->name('logout');
+});
+
+*/
