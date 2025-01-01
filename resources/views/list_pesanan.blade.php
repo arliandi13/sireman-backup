@@ -136,106 +136,110 @@
                 </thead>
                 <tbody>
                     @foreach($pesanan as $pesan)
-                    <tr>
-                        <td>{{ $pesan->kode_pesanan }}</td>
-                        <td>{{ $pesan->nama_pelanggan }}</td>
-                        <td>{{ $pesan->catatan_tambahan }}</td>
-                        <td style="text-align: left;">
-                            <ul>
-                                @php
-                                    $items = is_string($pesan->detail_pesanan) ? json_decode($pesan->detail_pesanan, true) : $pesan->detail_pesanan;
-                                @endphp
-                                @foreach($items as $item)
-                                    <li>
-                                        {{ $item['deskripsi'] ?? 'Unknown' }} - {{ $item['jumlah'] ?? 0 }} x Rp{{ number_format($item['harga'] ?? 0, 0, ',', '.') }}
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </td>
-                        <td>
-                            @if($pesan->is_bawa_pulang)
-                                Bawa Pulang
-                            @elseif(!empty($pesan->bangku))
-                                Nomor Meja: {{ $pesan->bangku }}
-                            @else
-                                Tidak Diketahui
-                            @endif
-                        </td>
-                        <td>{{ $pesan->status }}</td>
-                        <td>Rp{{ number_format($pesan->total_harga, 0, ',', '.') }}</td>
-
-                        @if(session('user') && session('user')->role === 'kasir')
-                        <td>
-                            <form action="{{ route('pembayaran.form', $pesan->kode_pesanan) }}" method="GET">
-                                @csrf
-                                <button type="submit" class="btn btn-success">Bayar</button>
-                            </form>
-                        </td>
-                        @endif
-
-                        @if(session('user') && session('user')->role === 'koki')
-                        <td>
-                            <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal{{ $pesan->kode_pesanan }}">Detail</button>
-                        </td>
-                        @endif
-                    </tr>
-
-                    <!-- Modal Detail Pesanan -->
-                    <div class="modal fade" id="detailModal{{ $pesan->kode_pesanan }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $pesan->kode_pesanan }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="detailModalLabel{{ $pesan->kode_pesanan }}">Detail Pesanan - {{ $pesan->kode_pesanan }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <ul>
-                                        @foreach($items as $item)
+                        @if($pesan->is_paid === 0)
+                        <tr>
+                            <td>{{ $pesan->kode_pesanan }}</td>
+                            <td>{{ $pesan->nama_pelanggan }}</td>
+                            <td>{{ $pesan->catatan_tambahan }}</td>
+                            <td style="text-align: left;">
+                                <ul>
+                                    @php
+                                        $items = is_string($pesan->detail_pesanan) ? json_decode($pesan->detail_pesanan, true) : $pesan->detail_pesanan;
+                                    @endphp
+                                    @foreach($items as $item)
                                         <li>
                                             {{ $item['deskripsi'] ?? 'Unknown' }} - {{ $item['jumlah'] ?? 0 }} x Rp{{ number_format($item['harga'] ?? 0, 0, ',', '.') }}
                                         </li>
-                                        @endforeach
-                                    </ul>
-                                    <p><strong>Total Harga:</strong> Rp{{ number_format($pesan->total_harga, 0, ',', '.') }}</p>
-                                    <p><strong>Status:</strong> {{ $pesan->status }}</p>
-                                    <p><strong>Catatan:</strong> {{ $pesan->catatan_tambahan }}</p>
+                                    @endforeach
+                                </ul>
+                            </td>
+                            <td>
+                                @if($pesan->is_bawa_pulang)
+                                    Bawa Pulang
+                                @elseif(!empty($pesan->bangku))
+                                    Nomor Meja: {{ $pesan->bangku }}
+                                @else
+                                    Tidak Diketahui
+                                @endif
+                            </td>
+                            <td>
+                                <span class="badge bg-warning">Belum Dibayar</span>
+                            </td>
+                            <td>Rp{{ number_format($pesan->total_harga, 0, ',', '.') }}</td>
 
-                                    @if(session('user') && session('user')->role === 'koki')
-                                    <div class="d-flex gap-2">
-                                    <form action="{{ route('update.status', $pesan->kode_pesanan) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
+                            @if(session('user') && session('user')->role === 'kasir')
+                            <td>
+                                <form action="{{ route('pembayaran.form', $pesan->kode_pesanan) }}" method="GET">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">Bayar</button>
+                                </form>
+                            </td>
+                            @endif
 
-                                            <button type="submit" name="status" value="Dalam Antrian" class="btn btn-outline-primary {{ $pesan->status == 'Dalam Antrian' ? 'active' : '' }}">
-                                                <div class="d-flex gap-2"></i> Dalam Antrian
-                                            </button>
+                            @if(session('user') && session('user')->role === 'koki')
+                            <td>
+                                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal{{ $pesan->kode_pesanan }}">Detail</button>
+                            </td>
+                            @endif
+                        </tr>
 
-                                            <button type="submit" name="status" value="Sedang Disiapkan" class="btn btn-outline-warning {{ $pesan->status == 'Sedang Disiapkan' ? 'active' : '' }}">
-                                                <i class="fas fa-spinner"></i> Sedang Disiapkan
-                                            </button>
+                        <!-- Modal Detail Pesanan -->
+                        <div class="modal fade" id="detailModal{{ $pesan->kode_pesanan }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $pesan->kode_pesanan }}" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="detailModalLabel{{ $pesan->kode_pesanan }}">Detail Pesanan - {{ $pesan->kode_pesanan }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul>
+                                            @foreach($items as $item)
+                                            <li>
+                                                {{ $item['deskripsi'] ?? 'Unknown' }} - {{ $item['jumlah'] ?? 0 }} x Rp{{ number_format($item['harga'] ?? 0, 0, ',', '.') }}
+                                            </li>
+                                            @endforeach
+                                        </ul>
+                                        <p><strong>Total Harga:</strong> Rp{{ number_format($pesan->total_harga, 0, ',', '.') }}</p>
+                                        <p><strong>Status:</strong> Belum Dibayar</p>
+                                        <p><strong>Catatan:</strong> {{ $pesan->catatan_tambahan }}</p>
 
-                                            <button type="submit" name="status" value="Siap Diantar" class="btn btn-outline-success {{ $pesan->status == 'Siap Diantar' ? 'active' : '' }}">
-                                                 <i class="fas fa-utensils"></i> Siap Diantar
-                                            </button>
+                                        @if(session('user') && session('user')->role === 'koki')
+                                        <div class="d-flex gap-2">
+                                        <form action="{{ route('update.status', $pesan->kode_pesanan) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
 
-                                            <button type="submit" name="status" value="Selesai" class="btn btn-outline-secondary {{ $pesan->status == 'Selesai' ? 'active' : '' }}">
-                                               <i class="fas fa-clipboard-check"></i> Selesai
-                                            </button>
+                                                <button type="submit" name="status" value="Dalam Antrian" class="btn btn-outline-primary {{ $pesan->status == 'Dalam Antrian' ? 'active' : '' }}">
+                                                    <div class="d-flex gap-2"></i> Dalam Antrian
+                                                </button>
 
-                                            <button type="submit" name="status" value="Dibatalkan" class="btn btn-outline-danger {{ $pesan->status == 'Dibatalkan' ? 'active' : '' }}">
-                                               <i class="fas fa-times-circle"></i> Dibatalkan
-                                            </button>
-                                        </div>
-                                    </form>
+                                                <button type="submit" name="status" value="Sedang Disiapkan" class="btn btn-outline-warning {{ $pesan->status == 'Sedang Disiapkan' ? 'active' : '' }}">
+                                                    <i class="fas fa-spinner"></i> Sedang Disiapkan
+                                                </button>
 
-                                    @endif
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                <button type="submit" name="status" value="Siap Diantar" class="btn btn-outline-success {{ $pesan->status == 'Siap Diantar' ? 'active' : '' }}">
+                                                     <i class="fas fa-utensils"></i> Siap Diantar
+                                                </button>
+
+                                                <button type="submit" name="status" value="Selesai" class="btn btn-outline-secondary {{ $pesan->status == 'Selesai' ? 'active' : '' }}">
+                                                   <i class="fas fa-clipboard-check"></i> Selesai
+                                                </button>
+
+                                                <button type="submit" name="status" value="Dibatalkan" class="btn btn-outline-danger {{ $pesan->status == 'Dibatalkan' ? 'active' : '' }}">
+                                                   <i class="fas fa-times-circle"></i> Dibatalkan
+                                                </button>
+                                            </div>
+                                        </form>
+
+                                        @endif
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        @endif
                     @endforeach
                 </tbody>
             </table>
@@ -245,6 +249,7 @@
             <a href="{{ route('dashboard-koki') }}" class="btn btn-primary">Kembali ke Dashboard Koki</a>
             @elseif (session('user') && session('user')->role === 'kasir')
             <a href="/" class="btn btn-primary">Kembali</a>
+            <a href="{{ route('list-pembayaran') }}" class="btn btn-secondary">List Pembayaran</a>
         @endif
         </div>
     </div>

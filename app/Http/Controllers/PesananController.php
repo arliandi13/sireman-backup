@@ -135,14 +135,21 @@ class PesananController extends Controller
 
     // Menampilkan detail pesanan berdasarkan kode_pesanan
     public function show($kode_pesanan)
-    {
-        $pesanan = Pesanan::where('kode_pesanan', $kode_pesanan)->first();
+{
+    $pesanan = Pesanan::where('kode_pesanan', $kode_pesanan)->first();
 
-        // Jika pesanan tidak ditemukan, tampilkan halaman 404
-        if (!$pesanan) {
-            abort(404);
-        }
+    // Jika pesanan tidak ditemukan, tampilkan halaman 404
+    if (!$pesanan) {
+        abort(404);
+    }
 
+    // Hanya kirimkan ke view jika is_paid bernilai 0
+    if ($pesanan->is_paid === 0) {
         return view('pesanan.show', compact('pesanan'));
     }
+
+    // Redirect atau tampilkan pesan jika is_paid adalah 1
+    return redirect()->route('pesanan.list-pesanan')->with('info', 'Pesanan ini sudah dibayar.');
+}
+
 }

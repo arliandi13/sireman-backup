@@ -46,7 +46,7 @@ class KokiController extends Controller
 
     public function updateStatus(Request $request, $kodePesanan)
     {
-        // Validate the request
+        // Memvalidasi permintaan
         $request->validate([
             'status' => 'required|in:Dalam Antrian,Sedang Disiapkan,Siap Diantar,Selesai,Dibatalkan',
         ]);
@@ -59,7 +59,7 @@ class KokiController extends Controller
                     'updated_at' => now(),
                 ]);
 
-            // Redirect to the dashboard-koki link with a success message
+            // Alihkan ke dasbor-koki dengan pesan sukses
             return redirect()->route('dashboard-koki')->with('message', 'Status updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
