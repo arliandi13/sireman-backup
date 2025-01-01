@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KokiController;
+use App\Http\Controllers\CustomerAuthController;
 
 /*
 |----------------------------------------------------------------------
@@ -32,6 +33,17 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Halaman logout
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Halaman login dan register pelanggan
+Route::get('/login-customer', [CustomerAuthController::class, 'showLoginForm'])->name('customer.login');
+Route::post('/login-customer', [CustomerAuthController::class, 'login'])->name('customer.login.post');
+Route::post('/register-customer', [CustomerAuthController::class, 'register'])->name('customer.register');
+
+// Dashboard pelanggan
+Route::get('/customer/dashboard', [CustomerAuthController::class, 'dashboard'])->name('customer.dashboard');
+
+// Logout pelanggan
+Route::get('/customer/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
 
 // Dashboard untuk pemilik
 Route::get('/dashboard-pemilik', [DashboardController::class, 'pemilikDashboard'])
