@@ -163,8 +163,21 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="badge bg-warning">Belum Dibayar</span>
+                                @if(session('user')->role === 'koki')
+                                    <span class="badge
+                                        @if($pesan->status == 'Dalam Antrian') bg-primary
+                                        @elseif($pesan->status == 'Sedang Disiapkan') bg-warning
+                                        @elseif($pesan->status == 'Siap Diantar') bg-success
+                                        @elseif($pesan->status == 'Selesai') bg-secondary
+                                        @elseif($pesan->status == 'Dibatalkan') bg-danger
+                                        @endif">
+                                        {{ $pesan->status }}
+                                    </span>
+                                @else
+                                    <span class="badge bg-warning">Belum Dibayar</span>
+                                @endif
                             </td>
+
                             <td>Rp{{ number_format($pesan->total_harga, 0, ',', '.') }}</td>
 
                             @if(session('user') && session('user')->role === 'kasir')
