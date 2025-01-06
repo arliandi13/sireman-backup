@@ -3,14 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Keuangan</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
+    <title>Laporan Penjualan</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .table {
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 15px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .table td {
+            background-color: #f9f9f9;
+        }
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #e6e6e6;
+        }
+        .container {
+            background-color: #f4f6f9;
+            border-radius: 10px;
+            padding: 30px;
+        }
+        .btn-back {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn-back:hover {
+            background-color: #0056b3;
+        }
+        h2 {
+            font-size: 2.5rem;
+            color: #333;
+            font-weight: bold;
         }
         .navbar {
             background-color: #ff8c00;
@@ -19,70 +56,68 @@
             color: #fff;
             font-weight: bold;
         }
-        .container {
+        .container1 {
             margin-top: 20px;
-        }
-        .filter-section {
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .filter-section label {
-            font-weight: bold;
-        }
-        table {
-            margin-top: 15px;
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        table th {
-            background-color: #343a40;
-            color: #fff;
-            text-align: center;
-        }
-        table td {
-            text-align: center;
-            vertical-align: middle;
-        }
-        .btn-explore {
-            background-color: #28a745;
-            color: #fff;
-        }
-        .btn-file {
-            background-color: #007bff;
-            color: #fff;
-        }
-        .btn-logout {
-            background-color: #dc3545;
-            color: #fff;
-            font-size: 18px;
-            border: none;
-        }
-        .btn-logout:hover {
-            background-color: #c82333;
         }
     </style>
 </head>
 <body>
-    <!-- Header Navbar -->
-    <nav class="navbar">
-        <div class="container">
-            <a class="navbar-brand" href="#">Laporan Penjualan</a>
-            <a href="#" class="btn btn-logout">⎋</a>
-        </div>
-    </nav>
+        <!-- Header Navbar -->
+        <nav class="navbar">
+            <div class="container1">
+                <a class="navbar-brand" href="#">Laporan Penjualan</a>
+            </div>
+        </nav>
 
-    <div class="d-flex justify-content-between mt-3">
-        <!-- Cek apakah role pengguna adalah 'koki' -->
-        @if(session('user') && session('user')->role === 'pemilik')
-            <a href="{{ route('dashboard_pemilik') }}" class="btn btn-primary">Kembali ke Dashboard pemilik</a>
+    <div class="container mt-5 shadow-lg">
+        <h2 class="text-center mb-4">Daftar Penjualan</h2>
+
+        @if($pembayaran->count() == 0)
+            <p class="text-center">Tidak ada data pembayaran yang ditemukan.</p>
+        @else
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Kode Pesanan</th>
+                            <th>Detail Pesanan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($pembayaran as $pay)
+                            @php
+                                // Dekode JSON untuk mendapatkan detail pesanan sebagai array
+                                $detailPesanan = json_decode($pay->detail_pesanan, true);
+                            @endphp
+
+                            <tr>
+                                <td>{{ $pay->kode_pesanan }}</td>
+                                <td>
+                                    @if($detailPesanan && is_array($detailPesanan))
+                                        @foreach ($detailPesanan as $item)
+                                            @if(isset($item['deskripsi'], $item['jumlah']))
+                                                <div><strong>{{ $item['deskripsi'] }}</strong> - {{ $item['jumlah'] }} pcs</div>
+                                            @else
+                                                <div>Data pesanan tidak lengkap</div>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        <div>Detail pesanan tidak tersedia</div>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         @endif
+
+        <div class="text-end mt-3">
+            <a href="{{ url('/dashboard-pemilik') }}" class="btn-back">Kembali</a>
+        </div>
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
