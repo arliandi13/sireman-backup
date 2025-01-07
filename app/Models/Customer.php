@@ -2,24 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory; // Trait untuk mendukung pembuatan instance model dengan factory.
+use Illuminate\Database\Eloquent\Model; // Kelas dasar untuk semua model Eloquent.
 
 class Customer extends Model
 {
-    use HasFactory;
+    use HasFactory; // Menggunakan trait HasFactory untuk mendukung factory.
 
-    protected $table = 'customers'; // Nama tabel di database
+    protected $table = 'customers'; // Nama tabel di database yang terkait dengan model ini.
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'name', // Kolom `name` bisa diisi secara massal.
+        'email', // Kolom `email` bisa diisi secara massal.
+        'password', // Kolom `password` bisa diisi secara massal.
     ];
 
-    // Tambahkan timestamps jika table menggunakan kolom created_at dan updated_at
+    // Mengaktifkan timestamps jika tabel memiliki kolom `created_at` dan `updated_at`.
     public $timestamps = true;
 
-    // Jika tidak menggunakan kolom timestamps
+    // Jika tabel tidak memiliki kolom timestamps, Anda dapat menonaktifkannya dengan baris berikut:
     // public $timestamps = false;
 }
