@@ -33,6 +33,7 @@
                 @if(session('user') && session('user')->role === 'kasir')
                     <!-- Menampilkan menu jika user adalah 'kasir' -->
                     <span class="me-3">Hello, {{ session('user')->name }}</span>
+                    <a href="{{ route('dashboard-koki')}}" class="btn btn-outline-primary btn-sm">Dashboard Kasir</a>
                     <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
                 @elseif(session('customer'))
                     <!-- Menampilkan menu jika yang login adalah 'customer' -->
@@ -42,7 +43,7 @@
                     <!-- Menampilkan menu jika belum ada yang login -->
                     <a href="/login-customer" class="btn btn-outline-primary btn-sm">Login</a>
                 @endif
-            </div>            
+            </div>
         </div>
     </nav>
 
@@ -61,6 +62,7 @@
         <a href="{{ route('pesanan.keranjang') }}" class="btn btn-primary mb-3">
             Keranjang ({{ count(session('keranjang', [])) }}) <!-- Menampilkan jumlah barang di keranjang -->
         </a>
+        <a href="{{ route('pesanan.list-pesanan')}} "class="btn btn-secondary mb-3">Pesanan Anda</a>
         @else
         <!-- Tindakan jika tidak ada yang login -->
         @endif
@@ -93,13 +95,13 @@
                                 <h5 class="card-title">{{ $menu->deskripsi }}</h5>
                                 <p class="card-text">Harga: Rp{{ number_format($menu->harga, 0, ',', '.') }}</p> <!-- Harga dalam format lokal -->
                                 <p class="card-text">Kategori: {{ ucfirst($menu->kategori) }}</p> <!-- Menggunakan 'ucfirst' untuk kapitalisasi pertama karakter kategori -->
-                                @if(session('user') && (session('user')->role === 'kasir')) <!-- Hanya ditampilkan untuk user dengan role 'kasir' -->
-                                    <!-- Form untuk Menambahkan Pesanan -->
-                                    <form action="{{ route('pesanan.tambah') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="kode_menu" value="{{ $menu->kode_menu }}">
-                                        <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
-                                    </form>
+                                @if((session('user') && session('user')->role === 'kasir') || session('customer'))
+                                <!-- Form untuk Menambahkan Pesanan -->
+                                <form action="{{ route('pesanan.tambah') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="kode_menu" value="{{ $menu->kode_menu }}">
+                                    <button type="submit" class="btn btn-success btn-sm">Tambah Pesanan</button>
+                                </form>
                                 @endif
                             </div>
                         </div>

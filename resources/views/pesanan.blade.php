@@ -6,6 +6,16 @@
     <title>Keranjang Pesanan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <body>
     <div class="container">
         <h1 class="my-4">Keranjang Pesanan</h1>
@@ -48,24 +58,33 @@
             @csrf
             <div class="mb-3">
                 <label for="nama_pelanggan">Nama Pelanggan</label>
-                <input type="text" class="form-control" name="nama_pelanggan" required>
+                <input type="text" class="form-control" name="nama_pelanggan" 
+                       value="{{ session('customer') ? session('customer')->name : '' }}" 
+                       {{ session('customer') ? 'readonly' : '' }} required>
+                @if(session('customer'))
+                    <input type="hidden" name="nama_pelanggan" value="{{ session('customer')->name }}">
+                @endif
             </div>
+        
             <div class="mb-3">
                 <label for="deskripsi">Catatan Tambahan</label>
-                <textarea class="form-control" name="catatan_tambahan" rows="3" placeholder="Catatan untuk pesanan..." required></textarea>
+                <textarea class="form-control" name="catatan_tambahan" rows="3" placeholder="Catatan untuk pesanan..."></textarea>
             </div>
+            
             <div class="mb-3">
                 <label for="bangku">Bangku</label>
                 <input type="number" class="form-control" id="bangku" name="bangku">
             </div>
+            
             <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" id="bawaPulang" name="is_bawa_pulang" value="1">
                 <label class="form-check-label" for="bawaPulang">Bawa Pulang</label>
             </div>
+            
             <h3>Total Harga: Rp{{ number_format($totalHarga, 0, ',', '.') }}</h3>
             <button type="submit" class="btn btn-success">Simpan Pesanan</button>
             <a href="/" class="btn btn-secondary">Kembali ke Menu</a>
-        </form>
+        </form>                
     </div>
 
     <script>

@@ -61,23 +61,20 @@ Route::get('/dashboard-koki', [KokiController::class, 'kokiDashboard'])
 
 // Rute untuk keranjang
 Route::post('/tambah-ke-keranjang', [PesananController::class, 'tambahKeKeranjang'])
-    ->name('pesanan.tambah')
-    ->middleware('checkRole:waiters,kasir');
+    ->name('pesanan.tambah');
 
 Route::get('/keranjang', [PesananController::class, 'lihatKeranjang'])
-    ->name('pesanan.keranjang')
-    ->middleware('checkRole:waiters,kasir');
+    ->name('pesanan.keranjang');
 
 Route::post('/keranjang/update', [PesananController::class, 'updateKeranjang'])
     ->name('pesanan.update');
 
 Route::post('/simpan-pesanan', [PesananController::class, 'simpanPesanan'])
-    ->name('pesanan.simpan')
-    ->middleware('checkRole:waiters,kasir');
+    ->name('pesanan.simpan');
 
+// Route for viewing all pesanan (for koki, kasir, and customers)
 Route::get('/list-pesanan', [PesananController::class, 'listPesanan'])
-    ->name('pesanan.list-pesanan')
-    ->middleware('checkRole:koki,kasir');
+    ->name('pesanan.list-pesanan');
 
 // Rute pembayaran
 Route::get('/pembayaran/{kodePesanan}', [PembayaranController::class, 'formPembayaran'])

@@ -18,8 +18,10 @@ class Pesanan extends Model
     // Nonaktifkan auto-increment karena kode_pesanan bukan integer auto-increment
     public $incrementing = false;
 
+    // Kolom yang bisa diisi
     protected $fillable = [
         'kode_pesanan',
+        'customer_id',  // Tambahkan kolom customer_id jika belum ada
         'nama_pelanggan',
         'bangku',
         'is_bawa_pulang',
@@ -29,7 +31,9 @@ class Pesanan extends Model
         'status',
     ];
 
+    // Casting untuk konversi tipe data, misalnya detail_pesanan sebagai array
     protected $casts = [
         'detail_pesanan' => 'array', // Menyimpan detail pesanan sebagai JSON
+        'is_bawa_pulang' => 'boolean',
     ];
 }

@@ -91,6 +91,10 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Efek bayangan pada tombol aktif */
         transform: scale(1.05); /* Efek pembesaran pada tombol aktif */
     }
+    .hover-scale:hover {
+    transform: scale(1.1); /* Membesar sedikit ketika diarahkan */
+    transition: transform 0.3s ease-in-out; /* Animasi smooth */
+}
     </style>
 </head>
 
@@ -98,20 +102,34 @@
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1">
-                @if(session('user')->role === 'koki')
+                @if(session('customer'))
+                    Dashboard Customer
+                @elseif(session('user') && session('user')->role === 'koki')
                     Dashboard Koki
-                @elseif(session('user')->role === 'kasir')
+                @elseif(session('user') && session('user')->role === 'kasir')
                     Dashboard Kasir
                 @else
                     Dashboard
                 @endif
             </span>
             <div class="d-flex">
-                <span class="navbar-text me-3">Hello, {{ session('user')->name }}</span>
-                <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
+                <span class="navbar-text me-3">
+                    Hello, 
+                    @if(session('customer'))
+                        {{ session('customer')->name }}
+                    @elseif(session('user'))
+                        {{ session('user')->name }}
+                    @else
+                        Guest
+                    @endif
+                </span>
+                @if(session('customer') || session('user'))
+                    <a href="{{ session('customer') ? route('customer.logout') : (session('user')->role === 'kasir' ? route('logout') : (session('user')->role === 'koki' ? route('logout') : route('logout'))) }}" class="btn btn-danger">Logout</a>
+                @endif
             </div>
         </div>
-    </nav>
+    </nav>        
+    
 
     <div class="container">
         <h1 class="my-4">List Pesanan</h1>
@@ -246,12 +264,12 @@
         </div>
         <div class="d-flex justify-content-center mt-3">
             @if(session('user') && session('user')->role === 'koki')
-            <a href="{{ route('dashboard-koki') }}" class="btn btn-primary">Kembali ke Dashboard Koki</a>
+                <a href="{{ route('dashboard-koki') }}" class="btn btn-primary px-4 py-2 me-3 rounded-pill shadow-sm text-white fw-bold hover-scale">Kembali ke Dashboard Koki</a>
             @elseif (session('user') && session('user')->role === 'kasir')
-            <a href="/" class="btn btn-primary">Kembali</a>
-            <a href="{{ route('list-pembayaran') }}" class="btn btn-secondary">List Pembayaran</a>
-        @endif
-        </div>
+                <a href="/" class="btn btn-primary px-4 py-2 me-3 rounded-pill shadow-sm text-white fw-bold hover-scale">Kembali</a>
+                <a href="{{ route('list-pembayaran') }}" class="btn btn-secondary px-4 py-2 me-3 rounded-pill shadow-sm text-white fw-bold hover-scale">List Pembayaran</a>
+            @endif
+        </div>        
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
