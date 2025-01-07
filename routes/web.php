@@ -94,3 +94,6 @@ Route::put('/update-status/{kodePesanan}', [PesananController::class, 'updateSta
 
 Route::get('/pesanan/{kode_pesanan}', [PesananController::class, 'show'])
     ->name('pesanan.detail');
+
+    Route::get('/laporan-penjualan', [DashboardController::class, 'laporanPenjualan'])->name('laporan_penjualan');
+

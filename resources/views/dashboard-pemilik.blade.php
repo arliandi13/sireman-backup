@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Pemilik</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
         }
 
         .navbar {
             background-color: #ff9800 !important;
             color: white !important;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .navbar .navbar-brand {
@@ -25,8 +28,8 @@
         }
 
         .sidebar {
-            background-color: #f4f4f4;
-            padding: 15px;
+            background-color: #343a40;
+            padding: 20px;
             border-right: 1px solid #ddd;
             height: 100vh;
         }
@@ -37,55 +40,105 @@
         }
 
         .sidebar li {
-            margin: 15px 0;
+            margin: 20px 0;
             font-weight: bold;
         }
 
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #ff9800;
+        }
+
         .main-content {
-            padding: 20px;
+            padding: 30px;
+            width: 100%;
         }
 
         .stats {
             display: flex;
-            gap: 15px;
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
         .card {
             flex: 1;
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h5 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .card p {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ff9800;
         }
 
         .ratings {
-            margin-top: 20px;
+            margin-top: 30px;
             text-align: center;
         }
 
         .stars {
-            font-size: 30px;
+            font-size: 40px;
             color: gold;
         }
 
         .btn-sidebar {
             width: 100%;
             margin: 10px 0;
+            padding: 12px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-sidebar:hover {
+            background-color: #e68900;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">Dashboard Pemilik</span>
+            <span class="navbar-brand mb-0 h1">Dashboard</span>
             <div class="d-flex">
                 <span class="navbar-text me-3">Hello, {{ session('user')->name }}</span>
                 <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
             </div>
         </div>
     </nav>
+
     <div class="container-fluid d-flex">
         <!-- Sidebar -->
         <aside class="sidebar">
@@ -100,20 +153,13 @@
             <!-- Stats Section -->
             <div class="stats">
                 <div class="card">
-                    <h5>Pemasukan Hari Ini</h5>
-                    <p><strong>Rp. 2.000.000</strong></p>
+                    <h5>Pemasukan Keuangan</h5>
+                    <p><strong>Rp. {{ number_format($totalPemasukan, 0, ',', '.') }}</strong></p>
                 </div>
+
                 <div class="card">
-                    <h5>Pemasukan Bulan Ini</h5>
-                    <p><strong>Rp. 25.000.000</strong></p>
-                </div>
-                <div class="card">
-                    <h5>Transaksi Hari Ini</h5>
-                    <p><strong>100 Orang</strong></p>
-                </div>
-                <div class="card">
-                    <h5>Transaksi Bulan Ini</h5>
-                    <p><strong>768 Orang</strong></p>
+                    <h5>Transaksi Penjualan</h5>
+                    <p><strong>{{ $totalTransaksi }} Orang</strong></p>
                 </div>
             </div>
 
@@ -124,5 +170,6 @@
             </div>
         </main>
     </div>
+
 </body>
 </html>

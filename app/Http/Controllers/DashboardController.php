@@ -25,13 +25,13 @@ class DashboardController extends Controller
     public function pemilikDashboard()
     {
         // Ambil data statistik untuk pemilik
-        $statistics = [
-            'totalOrders' => Pesanan::count(), // Total pesanan
-            'totalPembayaran' => Pembayaran::sum('jumlah'), // Total pembayaran
-        ];
+        $totalPemasukan = Pembayaran::sum('jumlah'); // Total pemasukan
+        $totalTransaksi = Pembayaran::count(); // Total transaksi
 
-        return view('dashboard-pemilik', compact('statistics'));
+        // Kirim data ke view
+        return view('dashboard-pemilik', compact('totalPemasukan', 'totalTransaksi'));
     }
+
 
     /**
      * Tampilkan halaman dashboard untuk pengguna lainnya.
@@ -77,31 +77,29 @@ class DashboardController extends Controller
     /**
      * Tampilkan halaman laporan penjualan untuk pemilik.
      */
-    public function laporanPenjualan(Request $request)
+    public function laporanPenjualan()
     {
-        // Ambil data pesanan berdasarkan status dan filter tanggal jika ada
-        $query = Pesanan::query();
+        // Ambil hanya kode pesanan dan detail pesanan dari pesanan yang sudah dibayar (is_paid = 1)
+        $pembayaran = Pesanan::where('is_paid', 1)
+                             ->select('kode_pesanan', 'detail_pesanan') // Ambil hanya kolom yang diperlukan
+                             ->get();
 
-        // Filter berdasarkan tanggal jika ada
-        if ($request->tanggal_awal && $request->tanggal_akhir) {
-            $query->whereBetween('created_at', [
-                $request->tanggal_awal,
-                $request->tanggal_akhir
-            ]);
-        }
+        // Kirim data ke view
+        return view('laporanpenjualan', compact('pembayaran'));
+    }
 
-        // Ambil data pesanan yang telah selesai atau yang sedang diproses
-        $penjualan = $query->whereIn('status', ['completed', 'paid'])->get();
+    public function index()
+    {
+        // Ambil semua pembayaran yang sudah dibayar
+        $pembayaran = Pembayaran::where('is_paid', 1)->get();
 
-        // Hitung total penjualan
-        $totalPenjualan = $penjualan->sum('total_harga');
+        // Hitung total pemasukan (jumlah pembayaran)
+        $totalPemasukan = $pembayaran->sum('jumlah');
 
-        // Format data untuk dikirim ke view
-        $data = [
-            'penjualan' => $penjualan, // Data laporan penjualan
-            'totalPenjualan' => $totalPenjualan, // Total penjualan
-        ];
+        // Ambil jumlah transaksi penjualan
+        $totalTransaksi = $pembayaran->count();
 
-        return view('laporanpenjualan', $data);
+        // Kirim data ke view
+        return view('dashboard.index', compact('totalPemasukan', 'totalTransaksi'));
     }
 }
