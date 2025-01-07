@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pesanan;
 use App\Models\Pembayaran;
+use \PDF;
 
 class PembayaranController extends Controller
 {
@@ -70,6 +71,39 @@ class PembayaranController extends Controller
             ->with('success', 'Pembayaran berhasil diproses dengan Kode Pembayaran: ' . $kodePembayaran);
     }
 
+    public function printPembayaran($kodePembayaran)
+{
+    try {
+        // Ambil data pembayaran berdasarkan kode_pembayaran
+        $pembayaran = Pembayaran::where('kode_pembayaran', $kodePembayaran)->first();
+
+        // Cek apakah data pembayaran ditemukan
+        if (!$pembayaran) {
+            return redirect()->route('pesanan.list-pesanan')->with('error', 'Pembayaran tidak ditemukan.');
+        }
+
+        // Ambil data terkait pesanan
+        $pesanan = Pesanan::where('kode_pesanan', $pembayaran->kode_pesanan)->first();
+
+        if (!$pesanan) {
+            return redirect()->route('pesanan.list-pesanan')->with('error', 'Pesanan tidak ditemukan untuk pembayaran ini.');
+        }
+
+        // Mengambil view untuk mencetak PDF
+        $pdf = \PDF::loadView('print-pembayaran', compact('pembayaran', 'pesanan'));
+
+        // Men-download file PDF
+        return $pdf->download('Pembayaran-' . $pembayaran->kode_pembayaran . '.pdf');
+        
+    } catch (\Exception $e) {
+        \Log::error('Kesalahan saat mencetak pembayaran: ' . $e->getMessage()); // Logging untuk debugging
+        return redirect()->route('pesanan.list-pesanan')->with('error', 'Terjadi kesalahan saat mencetak pembayaran: ' . $e->getMessage());
+    }
+}
+
+
+
+    
     public function listPembayaran()
     {
         $pembayaran = Pembayaran::all();

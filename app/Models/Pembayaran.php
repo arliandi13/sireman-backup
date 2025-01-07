@@ -25,4 +25,9 @@ class Pembayaran extends Model
         'qr_code',
         'authorized_qr',
     ];
+
+    public function pesanan()
+    {
+        return $this->belongsTo(Pesanan::class, 'kode_pesanan', 'kode_pesanan');
+    }
 }

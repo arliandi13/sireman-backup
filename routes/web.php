@@ -88,6 +88,9 @@ Route::post('/pembayaran', [PembayaranController::class, 'prosesPembayaran'])
 Route::get('/list-pembayaran', [PembayaranController::class, 'listPembayaran'])
     ->name('list-pembayaran');
 
+    Route::get('pembayaran/print/{kode_pembayaran}', [PembayaranController::class, 'printPembayaran'])->name('print-pembayaran');
+
+
 // Rute untuk mengupdate status pesanan
 Route::put('/update-status/{kodePesanan}', [PesananController::class, 'updateStatus'])
     ->name('update.status');

@@ -129,14 +129,14 @@
                     <td>Rp {{ number_format($pay->kembalian, 2, ',', '.') }}</td>
                     <td>{{ $pay->created_at }}</td>
                     <td>
-                        {{-- <form action="{{ route('print-pembayaran', $pay->id) }}" method="GET">
-                            <button type="submit">Print</button>
-                        </form> --}}
-                        <button class="btn btn-info btn-sm">Print</button>
+                        <!-- Formulir untuk Print Pembayaran -->
+                        <form action="{{ route('print-pembayaran', $pay->kode_pembayaran) }}" method="GET">
+                            <button type="submit" class="btn btn-info btn-sm">Print</button>
+                        </form>                        
                     </td>
                 </tr>
                 @endforeach
-            </tbody>
+            </tbody>            
         </table>
     </div>
     <div class="text-end">

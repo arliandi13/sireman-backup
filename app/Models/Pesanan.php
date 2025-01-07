@@ -36,4 +36,9 @@ class Pesanan extends Model
         'detail_pesanan' => 'array', // Menyimpan detail pesanan sebagai JSON
         'is_bawa_pulang' => 'boolean',
     ];
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'kode_pesanan', 'kode_pesanan');
+    }
 }
