@@ -119,25 +119,28 @@
     </nav>
 
     <!-- Container -->
-    <div class="container">
-        <form action="{{ route('laporan_keuangan') }}" method="GET">
-            <div class="filter-section mb-4">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label for="tanggal-awal">Tanggal Awal</label>
-                        <input type="date" class="form-control" id="tanggal-awal" name="tanggal_awal" value="{{ request()->get('tanggal_awal') }}">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="tanggal-akhir">Tanggal Akhir</label>
-                        <input type="date" class="form-control" id="tanggal-akhir" name="tanggal_akhir" value="{{ request()->get('tanggal_akhir') }}">
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button type="submit" class="btn btn-success me-2">Filter</button>
-                        <button type="button" class="btn btn-file">Cetak File</button>
-                    </div>
+    <form action="{{ route('laporan_keuangan') }}" method="GET">
+        <div class="filter-section mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="tanggal-awal">Tanggal Awal</label>
+                    <input type="date" class="form-control" id="tanggal-awal" name="tanggal_awal" value="{{ request()->get('tanggal_awal') }}">
+                </div>
+                <div class="col-md-4">
+                    <label for="tanggal-akhir">Tanggal Akhir</label>
+                    <input type="date" class="form-control" id="tanggal-akhir" name="tanggal_akhir" value="{{ request()->get('tanggal_akhir') }}">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success me-2">Filter</button>
                 </div>
             </div>
-        </form>
+        </div>
+    </form>
+    <form action="{{ route('laporan_keuangan.cetak') }}" method="GET">
+        <input type="hidden" name="tanggal_awal" value="{{ request()->get('tanggal_awal') }}">
+        <input type="hidden" name="tanggal_akhir" value="{{ request()->get('tanggal_akhir') }}">
+        <button type="submit" class="btn btn-primary">Cetak PDF</button>
+    </form>
 
         <!-- Table Section -->
         <table class="table table-bordered">

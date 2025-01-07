@@ -10,6 +10,7 @@ use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KokiController;
 use App\Http\Controllers\CustomerAuthController;
+use App\Http\Controllers\LaporanController;
 
 /*
 |----------------------------------------------------------------------
@@ -100,3 +101,4 @@ Route::get('/pesanan/{kode_pesanan}', [PesananController::class, 'show'])
 
     Route::get('/laporan-penjualan', [DashboardController::class, 'laporanPenjualan'])->name('laporan_penjualan');
 
+    Route::get('/laporan-keuangan/cetak', [LaporanController::class, 'cetak'])->name('laporan_keuangan.cetak');

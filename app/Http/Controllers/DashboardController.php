@@ -47,7 +47,6 @@ class DashboardController extends Controller
      */
     public function laporanKeuangan(Request $request)
     {
-        // Ambil data pembayaran dari database dengan filter tanggal jika ada
         $query = Pembayaran::query();
 
         // Periksa apakah parameter tanggal_awal dan tanggal_akhir ada
@@ -65,13 +64,11 @@ class DashboardController extends Controller
         // Hitung total pendapatan
         $totalPendapatan = $pembayaran->sum('jumlah');
 
-        // Format data untuk dikirim ke view
-        $data = [
+        // Kirim data ke view
+        return view('laporankeuangan', [
             'pembayaran' => $pembayaran,
             'totalPendapatan' => $totalPendapatan,
-        ];
-
-        return view('laporankeuangan', $data);
+        ]);
     }
 
     /**
