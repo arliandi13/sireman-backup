@@ -8,21 +8,40 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
             margin: 0;
-            background-image: url('https://via.placeholder.com/1200x800?text=Background+Food+Icons');
+            background-image: url('{{ asset('images/background.jpg') }}');
             background-size: cover;
             background-position: center;
         }
+        .navbar {
+            background-color: #ff9800 !important;
+            padding: 10px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .navbar .brand img {
+            height: 40px;
+        }
+        .navbar .actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
         .welcome-card {
             background-color: white;
-            border-radius: 10px;
+            border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 30px;
             text-align: center;
-            max-width: 400px;
-            width: 100%;
-            margin: 20px auto;
+            padding: 40px;
+            margin: 100px auto;
+            max-width: 500px;
         }
         .welcome-card h1 {
             font-size: 24px;
@@ -31,6 +50,10 @@
         .welcome-card p {
             font-size: 16px;
             margin-bottom: 30px;
+        }
+        .welcome-card img {
+            width: 80px;
+            margin-bottom: 20px;
         }
         .welcome-card .btn {
             background-color: #4caf50;
@@ -43,45 +66,27 @@
         .welcome-card .btn:hover {
             background-color: #45a049;
         }
-        .chef-icon {
-            font-size: 50px;
-            margin-bottom: 20px;
-        }
-        .navbar {
-            background-color: #ff9800 !important;
-            color: white !important;
-        }
-        .navbar .navbar-brand {
-            color: white;
-            font-weight: bold;
-        }
-        .navbar .btn {
-            color: white;
-        }
     </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">Dashboard Koki</span>
-            <div class="d-flex">
-                <span class="navbar-text me-3">Hello, {{ session('user')->name }}</span>
-                <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
-            </div>
+    <nav class="navbar">
+        <div class="brand">
+            <img src="{{ asset('images/LogoRm.png') }}" alt="Logo"> <!-- Logo RM -->
+            <span class="fw-bold">GOGO!</span>
+        </div>
+        <div class="actions">
+            <span class="navbar-text me-3">Hello, {{ session('user')->name }}</span>
+            <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <div class="container mt-5">
-        <h1>Welcome to the Koki Dashboard!</h1>
-        <p>Manage your kitchen tasks here.</p>
-        <div class="welcome-card">
-            <div class="chef-icon">🍳</div>
-            <h1>Hai, Koki Hebat!</h1>
-            <p>Setiap hari adalah kesempatan untuk menciptakan keajaiban di dapur.</p>
-            <a href="{{ route('pesanan.list-pesanan') }}" class="btn">Daftar Pesanan</a>
-        </div>
+    <div class="welcome-card">
+        <img src="{{ asset('images/koki.jpg') }}" alt="Chef Icon"> <!-- Chef Icon -->
+        <h1>Hai, Koki Hebat!</h1>
+        <p>Setiap hari adalah kesempatan untuk menciptakan keajaiban di dapur.</p>
+        <a href="{{ route('pesanan.list-pesanan') }}" class="btn">Daftar Pesanan</a>
     </div>
 </body>
 </html>

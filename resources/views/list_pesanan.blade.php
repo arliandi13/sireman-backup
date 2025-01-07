@@ -5,10 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List Pesanan</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         body {
-            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-image: url('{{ asset('images/background.jpg') }}');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .navbar {
+            background-color: #ff9800 !important;
+            padding: 10px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar .brand img {
+            height: 40px;
+        }
+
+        .navbar .actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .container {
@@ -62,11 +91,6 @@
             }
         }
 
-        .navbar {
-            background-color: #ff9800 !important;
-            color: white !important;
-        }
-
         .navbar .navbar-brand {
             color: white;
             font-weight: bold;
@@ -75,62 +99,40 @@
         .navbar .btn {
             color: white;
         }
+
         .btn-status {
-        border-radius: 20px; /* Membuat tombol berbentuk oval */
-        font-weight: bold;   /* Memberikan teks yang tebal */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .btn-status i {
-        margin-right: 5px; /* Memberikan jarak antara ikon dan teks */
-    }
+        .btn-status i {
+            margin-right: 5px;
+        }
 
-    .btn-status.active {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Efek bayangan pada tombol aktif */
-        transform: scale(1.05); /* Efek pembesaran pada tombol aktif */
-    }
-    .hover-scale:hover {
-    transform: scale(1.1); /* Membesar sedikit ketika diarahkan */
-    transition: transform 0.3s ease-in-out; /* Animasi smooth */
-}
+        .btn-status.active {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">
-                @if(session('customer'))
-                    Dashboard Customer
-                @elseif(session('user') && session('user')->role === 'koki')
-                    Dashboard Koki
-                @elseif(session('user') && session('user')->role === 'kasir')
-                    Dashboard Kasir
-                @else
-                    Dashboard
-                @endif
-            </span>
-            <div class="d-flex">
-                <span class="navbar-text me-3">
-                    Hello, 
-                    @if(session('customer'))
-                        {{ session('customer')->name }}
-                    @elseif(session('user'))
-                        {{ session('user')->name }}
-                    @else
-                        Guest
-                    @endif
-                </span>
-                @if(session('customer') || session('user'))
-                    <a href="{{ session('customer') ? route('customer.logout') : (session('user')->role === 'kasir' ? route('logout') : (session('user')->role === 'koki' ? route('logout') : route('logout'))) }}" class="btn btn-danger">Logout</a>
-                @endif
-            </div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="brand">
+            <img src="{{ asset('images/LogoRm.png') }}" alt="Logo"> <!-- Logo RM -->
+            <span class="fw-bold">GOGO!</span>
         </div>
-    </nav>        
-    
+        <div class="actions">
+            <span class="navbar-text me-3">Hello, {{ session('user')->name }}</span>
+            <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
+        </div>
+    </nav>
 
+    <!-- Main Content -->
     <div class="container">
         <h1 class="my-4">List Pesanan</h1>
         <div class="table-responsive">
@@ -277,12 +279,12 @@
         </div>
         <div class="d-flex justify-content-center mt-3">
             @if(session('user') && session('user')->role === 'koki')
-                <a href="{{ route('dashboard-koki') }}" class="btn btn-primary px-4 py-2 me-3 rounded-pill shadow-sm text-white fw-bold hover-scale">Kembali ke Dashboard Koki</a>
+            <a href="{{ route('dashboard-koki') }}" class="btn btn-primary">Kembali ke Dashboard Koki</a>
             @elseif (session('user') && session('user')->role === 'kasir')
-                <a href="/" class="btn btn-primary px-4 py-2 me-3 rounded-pill shadow-sm text-white fw-bold hover-scale">Kembali</a>
-                <a href="{{ route('list-pembayaran') }}" class="btn btn-secondary px-4 py-2 me-3 rounded-pill shadow-sm text-white fw-bold hover-scale">List Pembayaran</a>
-            @endif
-        </div>        
+            <a href="/" class="btn btn-primary">Kembali</a>
+            <a href="{{ route('list-pembayaran') }}" class="btn btn-secondary">List Pembayaran</a>
+        @endif
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

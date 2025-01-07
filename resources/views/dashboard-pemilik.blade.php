@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -128,11 +129,16 @@
         }
     </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Navbar -->
+    <nav class="navbar">
         <div class="container-fluid">
-            <span class="navbar-brand mb-0 h1">Dashboard</span>
-            <div class="d-flex">
+            <div class="brand">
+                <img src="{{ asset('images/LogoRm.png') }}" alt="Logo" style="height: 40px;"> <!-- Logo RM -->
+                <span class="fw-bold">GOGO!</span>
+            </div>
+            <div class="actions d-flex">
                 <span class="navbar-text me-3">Hello, {{ session('user')->name }}</span>
                 <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
             </div>
@@ -172,4 +178,5 @@
     </div>
 
 </body>
+
 </html>

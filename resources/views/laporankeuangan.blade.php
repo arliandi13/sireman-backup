@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,68 +11,110 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            margin: 0;
+            background-image: url('{{ asset('images/background.jpg') }}');
+            background-size: cover;
+            background-position: center;
         }
+
         .navbar {
-            background-color: #ff8c00;
+            background-color: #ff9800 !important;
+            padding: 10px 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .navbar-brand {
-            color: #fff;
-            font-weight: bold;
+
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
+        .navbar .brand img {
+            height: 40px;
+        }
+
+        .navbar .actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .container {
             margin-top: 20px;
         }
+
         .filter-section {
             background-color: #fff;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .filter-section label {
             font-weight: bold;
         }
+
         table {
             margin-top: 15px;
             background-color: #fff;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         table th {
             background-color: #343a40;
             color: #fff;
             text-align: center;
         }
+
         table td {
             text-align: center;
             vertical-align: middle;
         }
+
         .btn-explore {
             background-color: #28a745;
             color: #fff;
         }
+
         .btn-file {
             background-color: #007bff;
             color: #fff;
         }
+
         .btn-logout {
             background-color: #dc3545;
             color: #fff;
             font-size: 18px;
             border: none;
         }
+
         .btn-logout:hover {
             background-color: #c82333;
         }
+
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <!-- Header Navbar -->
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="container">
-            <a class="navbar-brand" href="#">Laporan Keuangan</a>
-            <a href="#" class="btn btn-logout">⎋</a>
+        <div class="brand">
+            <img src="{{ asset('images/LogoRm.png') }}" alt="Logo"> <!-- Logo RM -->
+            <span class="fw-bold">GOGO!</span>
+        </div>
+        <div class="actions d-flex">
+            <span class="navbar-text me-3">Hello, {{ session('user')->name }}</span>
+            <a href="{{ route('logout') }}" class="btn btn-danger">Logout</a>
         </div>
     </nav>
 
@@ -90,6 +133,7 @@
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="submit" class="btn btn-success me-2">Filter</button>
+                        <button type="button" class="btn btn-file">Cetak File</button>
                     </div>
                 </div>
             </div>
@@ -103,7 +147,6 @@
                     <th>Tanggal</th>
                     <th>Keterangan</th>
                     <th>Pemasukan</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -113,10 +156,6 @@
                     <td>{{ $pay->created_at->format('d-m-Y') }}</td>
                     <td>{{ 'Pembayaran untuk Pesanan ' . $pay->kode_pesanan }}</td>
                     <td>Rp. {{ number_format($pay->jumlah, 0, ',', '.') }}</td>
-                    <td>
-                        <button class="btn btn-sm btn-explore">Eksplor</button>
-                        <button class="btn btn-sm btn-file">Cetak File</button>
-                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -131,4 +170,5 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
