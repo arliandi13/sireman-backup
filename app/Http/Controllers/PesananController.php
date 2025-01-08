@@ -80,40 +80,27 @@ class PesananController extends Controller
     public function simpanPesanan(Request $request)
 {
     try {
-        // Validasi input
         $validatedData = $request->validate([
-            'nama_pelanggan' => 'required|string', // Nama pelanggan dari input kasir
+            'nama_pelanggan' => 'required|string',
             'bangku' => 'nullable|required_without:is_bawa_pulang',
             'is_bawa_pulang' => 'nullable|boolean|required_without:bangku',
             'catatan_tambahan' => 'nullable|string',
             'customer_id' => [
-                'required_if:role,kasir',
-                'exists:customers,id'
-            ]
+                'nullable', // Allow null for customer_id when adding from customers
+                'exists:customers,id',
+            ],
         ]);
 
-        // Ambil user yang sedang login
         $user = Auth::user();
-
-        // Jika user tidak login, redirect ke halaman login
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
-        }
-
-        // Validasi keranjang
         $keranjang = session()->get('keranjang', []);
         if (empty($keranjang)) {
             return redirect()->back()->with('error', 'Keranjang kosong.');
         }
 
-        // Ambil nama pelanggan dari customer_id yang dipilih oleh kasir
         $customerId = $request->input('customer_id');
         $namaPelangganDariDB = Customer::where('id', $customerId)->value('name');
+        $namaPelanggan = $namaPelangganDariDB ?: $request->input('nama_pelanggan');
 
-        // Jika nama pelanggan tidak ditemukan, gunakan nama dari input
-        $namaPelanggan = !empty($namaPelangganDariDB) ? $namaPelangganDariDB : $request->input('nama_pelanggan');
-
-        // Hitung total harga dan detail pesanan
         $detailPesanan = [];
         $totalHarga = 0;
         foreach ($keranjang as $kodeMenu => $item) {
@@ -121,17 +108,15 @@ class PesananController extends Controller
                 'kode_menu' => $item['menu']->kode_menu,
                 'deskripsi' => $item['menu']->deskripsi,
                 'harga' => $item['menu']->harga,
-                'jumlah' => $item['jumlah']
+                'jumlah' => $item['jumlah'],
             ];
-
             $totalHarga += $item['menu']->harga * $item['jumlah'];
         }
 
-        // Simpan pesanan
         Pesanan::create([
             'kode_pesanan' => 'PES-' . time(),
             'customer_id' => $customerId,
-            'nama_pelanggan' => $namaPelanggan,  // Menggunakan nama pelanggan yang diambil di atas
+            'nama_pelanggan' => $namaPelanggan,
             'bangku' => $request->input('bangku'),
             'is_bawa_pulang' => (bool)$request->input('is_bawa_pulang'),
             'catatan_tambahan' => $request->input('catatan_tambahan'),
@@ -140,49 +125,46 @@ class PesananController extends Controller
             'status' => 'Dalam Antrian',
         ]);
 
-        // Bersihkan keranjang
         session()->forget('keranjang');
 
         return redirect()->route('pesanan.list-pesanan')->with('success', 'Pesanan berhasil disimpan.');
     } catch (\Exception $e) {
-        \Log::error('Kesalahan Simpan Pesanan: ' . $e->getMessage()); // Logging untuk debugging
+        \Log::error('Kesalahan Simpan Pesanan: ' . $e->getMessage());
         return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan pesanan.');
     }
 }
 
 
-
-
     // Menampilkan daftar pesanan
     public function listPesanan()
 {
-    // Ambil customer ID dari sesi (untuk pelanggan)
+    $user = Auth::user(); // Mengambil users yang diautentikasi
     $customerId = session('customer') ? session('customer')->id : null;
 
-    // Ambil user yang sedang login
-    $user = session('user');
+    // Initialize $pesanan variable
+    $pesanan = collect(); // Use a collection to avoid null issues later
 
-    // Cek apakah user adalah pelanggan
-    if ($customerId) {
-        // Jika customer login, tampilkan pesanan milik pelanggan tersebut yang belum dibayar
-        $pesanan = Pesanan::where('customer_id', $customerId)
-                          ->where('is_paid', 0) // Filter untuk hanya menampilkan pesanan yang belum dibayar
-                          ->get();
-    } elseif ($user) {
-        // Jika user login, periksa perannya
-        if ($user->role === 'kasir' || $user->role === 'koki') {
-            // Jika user dengan role 'kasir' atau 'koki' login, tampilkan semua pesanan yang belum dibayar
-            $pesanan = Pesanan::where('is_paid', 0)->get(); // Filter untuk hanya menampilkan pesanan yang belum dibayar
-        } else {
-            // Jika user tidak memiliki peran yang valid, arahkan ke halaman login atau halaman lain
-            return redirect()->route('login')->with('error', 'Anda tidak memiliki akses untuk melihat daftar pesanan.');
+    try {
+        // Mengambil pesanan untuk customers  (ketika customers  diautentikasi)
+        if ($customerId) {
+            $pesanan = Pesanan::where('customer_id', $customerId)
+                              ->where('is_paid', 0)
+                              ->get();
         }
-    } else {
-        // Jika tidak memenuhi kondisi, arahkan ke halaman login pelanggan
-        return redirect()->route('customer.login')->with('error', 'Silakan login untuk melihat daftar pesanan.');
+        // Mengambil pesanan untuk kasir dan koki (peran pengguna 'kasir' atau 'koki')
+        elseif ($user && in_array($user->role, ['kasir', 'koki'])) {
+            $pesanan = Pesanan::where('is_paid', 0)->get();
+        }
+        // Akses tidak sah, jika tidak ada pelanggan atau pengguna kasir/koki yang valid
+        else {
+            throw new \Exception('Unauthorized access');
+        }
+    } catch (\Exception $e) {
+        // Menangani pengecualian: mencatatnya atau mengembalikan pesan kesalahan
+        return redirect()->route('login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
 
-    return view('list_pesanan', compact('pesanan'));
+    return view('list_pesanan', compact('pesanan', 'user'));
 }
 
 
@@ -192,12 +174,12 @@ class PesananController extends Controller
     public function updateStatus(Request $request, $kodePesanan)
     {
         $pesanan = Pesanan::where('kode_pesanan', $kodePesanan)->firstOrFail();
-        
+
          // Validasi status yang diterima dari request
          if (!in_array($request->status, ['Dalam Antrian', 'Diproses', 'Selesai'])) {
              abort(400, "Status tidak valid.");
          }
-        
+
          // Update status pesanan dan simpan perubahan ke database
          if ($pesanan) {
              $pesanan->status = request()->status;
